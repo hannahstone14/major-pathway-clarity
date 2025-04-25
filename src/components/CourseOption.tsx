@@ -32,26 +32,34 @@ export function CourseOption({
   const isCompleted = selectedCourse && completedCourses.includes(selectedCourse);
   
   const handleRadioChange = (value: string) => {
-    // First remove any previously completed course from this option group
-    courses.forEach(course => {
-      if (completedCourses.includes(course.code)) {
-        onCourseToggle(course.code); // Remove from completed
+    if (value === selectedCourse) {
+      // If clicking the same option, unselect it and remove from completed
+      onCourseSelect("");
+      if (completedCourses.includes(value)) {
+        onCourseToggle(value);
       }
-    });
-    
-    // Then select the new course
-    onCourseSelect(value);
-    
-    // If the course is not already in the completed list, add it
-    if (!completedCourses.includes(value)) {
-      onCourseToggle(value); // Add to completed
+    } else {
+      // Remove any previously completed course from this option group
+      courses.forEach(course => {
+        if (completedCourses.includes(course.code)) {
+          onCourseToggle(course.code);
+        }
+      });
+      
+      // Select the new course
+      onCourseSelect(value);
+      
+      // If the course is not already in the completed list, add it
+      if (!completedCourses.includes(value)) {
+        onCourseToggle(value);
+      }
     }
   };
 
   return (
     <Card 
       className={`w-full hover:shadow-md transition-all ${
-        isCompleted ? 'border-green-500 shadow-green-100 opacity-60' : ''
+        isCompleted ? 'border-green-500 shadow-green-100' : ''
       }`}
     >
       <CardHeader>
@@ -81,3 +89,4 @@ export function CourseOption({
     </Card>
   );
 }
+
