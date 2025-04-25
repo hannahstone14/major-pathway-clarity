@@ -20,7 +20,7 @@ interface ElectivesSectionProps {
   onCourseToggle: (code: string) => void;
 }
 
-const ELECTIVES_2000 = [
+const ELECTIVES_2000: Elective[] = [
   { 
     code: "ECON UN2105", 
     title: "The American Economy", 
@@ -35,7 +35,7 @@ const ELECTIVES_2000 = [
   },
 ];
 
-const ELECTIVES_3000_4000 = [
+const ELECTIVES_3000_4000: Elective[] = [
   { 
     code: "ECON UN3025", 
     title: "Financial Economics", 
@@ -101,11 +101,7 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
 
   const handleElectiveToggle = (code: string, is2000Level: boolean) => {
     if (is2000Level && completed2000Level.length >= 1 && !completedCourses.includes(code)) {
-      toast({
-        title: "Selection Error",
-        description: "Only one 2000-level elective is allowed.",
-        variant: "destructive",
-      });
+      toast.error("Only one 2000-level elective is allowed.");
       return;
     }
     onCourseToggle(code);
