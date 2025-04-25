@@ -5,10 +5,11 @@ import { CourseOption } from "@/components/CourseOption";
 import { RequirementSection } from "@/components/RequirementSection";
 import { ProgressSummary } from "@/components/ProgressSummary";
 import { Calendar } from "lucide-react";
+import { ElectivesSection } from "@/components/ElectivesSection";
 
 export default function Index() {
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
-  const [selectedCourses, setSelectedCourses] = useState<{ [key: string]: string }>({});
+  const [selectedCourses, setSelectedCourses<{ [key: string]: string }>({});
 
   const handleCourseToggle = (code: string) => {
     setCompletedCourses(prev => 
@@ -179,48 +180,10 @@ export default function Index() {
           />
         </RequirementSection>
 
-        <RequirementSection
-          title="III. Electives"
-          description="5 courses required (at most 1 can be 2000-level, all 3000/4000-level electives require UN3211 + UN3213)"
+        <ElectivesSection 
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
-        >
-          <CourseCard
-            code="ECON UN2105"
-            title="Economics Elective (2000-level)"
-            credits={3}
-            prerequisites={["ECON UN1105"]}
-            description="2000-level economics elective course."
-          />
-          <CourseCard
-            code="ECON UN3251"
-            title="Money and Banking"
-            credits={3}
-            prerequisites={["ECON UN3211", "ECON UN3213"]}
-            description="Analysis of financial markets and institutions."
-          />
-          <CourseCard
-            code="ECON UN3265"
-            title="Economics of Healthcare"
-            credits={3}
-            prerequisites={["ECON UN3211", "ECON UN3213"]}
-            description="Economic analysis of healthcare markets and policies."
-          />
-          <CourseCard
-            code="ECON UN3952"
-            title="International Trade"
-            credits={3}
-            prerequisites={["ECON UN3211", "ECON UN3213"]}
-            description="Analysis of international trade patterns and policies."
-          />
-          <CourseCard
-            code="ECON GU4370"
-            title="Political Economy"
-            credits={3}
-            prerequisites={["ECON UN3211", "ECON UN3213"]}
-            description="Analysis of political-economic interactions and institutions."
-          />
-        </RequirementSection>
+        />
 
         <RequirementSection
           title="IV. Seminar Requirement"
@@ -261,7 +224,6 @@ export default function Index() {
               }
             ]}
             selectedCourse={selectedCourses["seminar"]}
-            completedCourses={completedCourses}
             onCourseSelect={(code) => handleCourseSelect("seminar", code)}
             onCourseToggle={handleCourseToggle}
           />
