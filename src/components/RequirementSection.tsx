@@ -9,13 +9,21 @@ interface RequirementSectionProps {
   children: React.ReactNode;
 }
 
+interface CompletableElement {
+  props: {
+    code: string;
+    isCompleted?: boolean;
+    onToggleComplete?: (code: string) => void;
+  }
+}
+
 export function RequirementSection({ title, description, children }: RequirementSectionProps) {
   const [completed, setCompleted] = useState<string[]>([]);
 
   const childrenWithCompletion = React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child, {
-        isCompleted: completed.includes(child.props.code),
+    if (React.isValidElement(child) && 'code' in child.props) {
+      return React.cloneElement(child as React.ReactElement<CompletableElement>, {
+        isCompleted: completed.includes((child as any).props.code),
         onToggleComplete: (code: string) => {
           setCompleted(prev => 
             prev.includes(code) 
