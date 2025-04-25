@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
@@ -9,7 +10,7 @@ import { ElectivesSection } from "@/components/ElectivesSection";
 
 export default function Index() {
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
-  const [selectedCourses, setSelectedCourses<{ [key: string]: string }>({});
+  const [selectedCourses, setSelectedCourses] = useState<{ [key: string]: string }>({});
 
   const handleCourseToggle = (code: string) => {
     setCompletedCourses(prev => 
