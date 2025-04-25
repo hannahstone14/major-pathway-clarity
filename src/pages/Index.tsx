@@ -56,22 +56,25 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground py-12 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <h1 className="text-4xl font-bold mb-4 font-inter">Economics Major Requirements</h1>
-          <p className="text-lg opacity-90 max-w-2xl">
-            Navigate your path through the Economics major with our comprehensive guide to course requirements, prerequisites, and recommended sequences.
-          </p>
-          <Button variant="secondary" className="mt-6" size="lg">
-            <Calendar className="mr-2 h-4 w-4" />
-            Plan Your Schedule
-          </Button>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background">
+        <header className="bg-primary text-primary-foreground py-12 px-4">
+          <div className="container mx-auto max-w-6xl">
+            <h1 className="text-4xl font-bold mb-4 font-inter">Economics Major Requirements</h1>
+            <p className="text-lg opacity-90 max-w-2xl">
+              Navigate your path through the Economics major with our comprehensive guide to course requirements, prerequisites, and recommended sequences.
+            </p>
+            <Button variant="secondary" className="mt-6" size="lg">
+              <Calendar className="mr-2 h-4 w-4" />
+              Plan Your Schedule
+            </Button>
+          </div>
+        </header>
+        <div className="container mx-auto max-w-6xl px-4 py-4">
+          <ProgressSummary completedCourses={completedCourses} allCourses={allCourses} />
         </div>
-      </header>
+      </div>
 
-      <main className="container mx-auto max-w-6xl px-4 py-8">
-        <ProgressSummary completedCourses={completedCourses} allCourses={allCourses} />
-        
+      <main className="container mx-auto max-w-6xl px-4 pt-[400px]">
         <RequirementSection
           title="I. Quantitative Requirements"
           description="Mathematical foundation courses required for the Economics major"
