@@ -1,12 +1,13 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
 
 interface RequirementSectionProps {
   title: string;
   description: string;
   children: React.ReactNode;
+  completedCourses: string[];
+  onCourseToggle: (code: string) => void;
 }
 
 // Define a type for props that the CourseCard component accepts
@@ -16,21 +17,18 @@ interface CourseCardProps {
   onToggleComplete?: (code: string) => void;
 }
 
-export function RequirementSection({ title, description, children }: RequirementSectionProps) {
-  const [completed, setCompleted] = useState<string[]>([]);
-
+export function RequirementSection({ 
+  title, 
+  description, 
+  children, 
+  completedCourses,
+  onCourseToggle 
+}: RequirementSectionProps) {
   const childrenWithCompletion = React.Children.map(children, (child) => {
     if (React.isValidElement(child) && 'code' in child.props) {
-      // Cast the element to have the correct props type
       return React.cloneElement(child as React.ReactElement<CourseCardProps>, {
-        isCompleted: completed.includes(child.props.code as string),
-        onToggleComplete: (code: string) => {
-          setCompleted(prev => 
-            prev.includes(code) 
-              ? prev.filter(c => c !== code)
-              : [...prev, code]
-          );
-        }
+        isCompleted: completedCourses.includes(child.props.code as string),
+        onToggleComplete: onCourseToggle
       });
     }
     return child;

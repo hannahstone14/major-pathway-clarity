@@ -1,10 +1,32 @@
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
 import { RequirementSection } from "@/components/RequirementSection";
+import { ProgressSummary } from "@/components/ProgressSummary";
 import { Calendar } from "lucide-react";
 
 export default function Index() {
+  const [completedCourses, setCompletedCourses] = useState<string[]>([]);
+
+  const handleCourseToggle = (code: string) => {
+    setCompletedCourses(prev => 
+      prev.includes(code) 
+        ? prev.filter(c => c !== code)
+        : [...prev, code]
+    );
+  };
+
+  const allCourses = [
+    { code: "ECON 101", title: "Principles of Microeconomics", credits: 4 },
+    { code: "ECON 102", title: "Principles of Macroeconomics", credits: 4 },
+    { code: "ECON 301", title: "Intermediate Microeconomics", credits: 4 },
+    { code: "MATH 120", title: "Calculus I", credits: 4 },
+    { code: "STAT 210", title: "Statistical Methods", credits: 4 },
+    { code: "ECON 410", title: "International Economics", credits: 4 },
+    { code: "ECON 420", title: "Labor Economics", credits: 4 },
+    { code: "ECON 430", title: "Public Economics", credits: 4 },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-primary text-primary-foreground py-12 px-4">
@@ -21,9 +43,13 @@ export default function Index() {
       </header>
 
       <main className="container mx-auto max-w-6xl px-4 py-8">
+        <ProgressSummary completedCourses={completedCourses} allCourses={allCourses} />
+
         <RequirementSection
           title="Core Requirements"
           description="These foundational courses are required for all Economics majors"
+          completedCourses={completedCourses}
+          onCourseToggle={handleCourseToggle}
         >
           <CourseCard
             code="ECON 101"
@@ -50,6 +76,8 @@ export default function Index() {
         <RequirementSection
           title="Mathematical Prerequisites"
           description="Required mathematical foundation courses"
+          completedCourses={completedCourses}
+          onCourseToggle={handleCourseToggle}
         >
           <CourseCard
             code="MATH 120"
@@ -69,6 +97,8 @@ export default function Index() {
         <RequirementSection
           title="Upper Division Electives"
           description="Choose four courses from the following list"
+          completedCourses={completedCourses}
+          onCourseToggle={handleCourseToggle}
         >
           <CourseCard
             code="ECON 410"
