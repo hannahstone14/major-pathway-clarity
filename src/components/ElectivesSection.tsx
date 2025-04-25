@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -65,7 +64,6 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
 
   const handleElectiveToggle = (code: string, is2000Level: boolean) => {
     if (is2000Level) {
-      // Check if we're trying to add a second 2000-level course
       if (completed2000Level.length >= 1 && !completedCourses.includes(code)) {
         toast({
           title: "Selection Error",
@@ -76,7 +74,6 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
       }
     }
 
-    // Check if we're exceeding 5 total electives
     if (!completedCourses.includes(code) && completedCourses.length >= 5) {
       toast({
         title: "Selection Error",
@@ -89,32 +86,9 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
     onCourseToggle(code);
   };
 
-  const renderElectiveGroup = (electives: Elective[], is2000Level: boolean) => (
-    <div className="space-y-2">
-      {electives.map((elective) => (
-        <div key={elective.code} className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg">
-          <Checkbox
-            id={elective.code}
-            checked={completedCourses.includes(elective.code)}
-            onCheckedChange={() => handleElectiveToggle(elective.code, is2000Level)}
-          />
-          <div className="grid gap-1.5 leading-none">
-            <label
-              htmlFor={elective.code}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              {elective.code} - {elective.title}
-            </label>
-            <p className="text-sm text-muted-foreground">
-              {elective.credits} credits
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  const allElectives = [...ELECTIVES_2000, ...ELECTIVES_3000_4000].sort((a, b) => a.code.localeCompare(b.code));
 
-  const totalCredits = [...ELECTIVES_2000, ...ELECTIVES_3000_4000]
+  const totalCredits = allElectives
     .filter(elective => completedCourses.includes(elective.code))
     .reduce((sum, elective) => sum + elective.credits, 0);
 
@@ -130,20 +104,33 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
         </p>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">2000-level Electives (select maximum 1)</h3>
-            <ScrollArea className="h-[120px] rounded-md border p-4">
-              {renderElectiveGroup(ELECTIVES_2000, true)}
-            </ScrollArea>
+        <ScrollArea className="h-[520px] rounded-md border p-4">
+          <div className="space-y-2">
+            {allElectives.map((elective) => (
+              <div key={elective.code} className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg">
+                <Checkbox
+                  id={elective.code}
+                  checked={completedCourses.includes(elective.code)}
+                  onCheckedChange={() => handleElectiveToggle(elective.code, ELECTIVES_2000.some(e => e.code === elective.code))}
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor={elective.code}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {elective.code} - {elective.title}
+                    {ELECTIVES_2000.some(e => e.code === elective.code) && 
+                      <span className="ml-2 text-xs text-muted-foreground">(2000-level)</span>
+                    }
+                  </label>
+                  <p className="text-sm text-muted-foreground">
+                    {elective.credits} credits
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">3000/4000-level Electives</h3>
-            <ScrollArea className="h-[400px] rounded-md border p-4">
-              {renderElectiveGroup(ELECTIVES_3000_4000, false)}
-            </ScrollArea>
-          </div>
-        </div>
+        </ScrollArea>
       </CardContent>
     </Card>
   );
