@@ -100,7 +100,7 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
           <CardTitle className="text-2xl font-bold text-primary">Electives</CardTitle>
         </div>
         <p className="text-muted-foreground">
-          Select up to 5 electives (maximum one 2000-level course). Current total: {totalCredits} credits
+          Select up to 5 electives (maximum one 2000-level course). Selected: {completedCourses.length}/5. Current total: {totalCredits} credits
         </p>
       </CardHeader>
       <CardContent>
