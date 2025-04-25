@@ -3,15 +3,15 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
-// Determine the base URL for GitHub Pages or local development
+// Get the base URL from the window object which is set in index.html
 const basename = window.location.pathname.includes('major-pathway-clarity') 
-  ? '/major-pathway-clarity' 
-  : '';
+  ? '/major-pathway-clarity/' 
+  : '/';
 
 const queryClient = new QueryClient();
 

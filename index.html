@@ -16,12 +16,21 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Remove any Content-Security-Policy headers that might be causing issues -->
+    <script>
+      // Handle base path for GitHub Pages deployment
+      window.basePath = window.location.pathname.includes('major-pathway-clarity') 
+        ? '/major-pathway-clarity/' 
+        : '/';
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <!-- Use a properly formatted script tag for the main entry point -->
     <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
