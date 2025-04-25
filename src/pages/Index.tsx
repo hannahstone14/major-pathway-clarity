@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
@@ -17,14 +18,31 @@ export default function Index() {
   };
 
   const allCourses = [
-    { code: "ECON 101", title: "Principles of Microeconomics", credits: 4 },
-    { code: "ECON 102", title: "Principles of Macroeconomics", credits: 4 },
-    { code: "ECON 301", title: "Intermediate Microeconomics", credits: 4 },
-    { code: "MATH 120", title: "Calculus I", credits: 4 },
-    { code: "STAT 210", title: "Statistical Methods", credits: 4 },
-    { code: "ECON 410", title: "International Economics", credits: 4 },
-    { code: "ECON 420", title: "Labor Economics", credits: 4 },
-    { code: "ECON 430", title: "Public Economics", credits: 4 },
+    // Quantitative Requirements
+    { code: "MATH UN1101", title: "Calculus I", credits: 3 },
+    { code: "MATH UN1102", title: "Calculus II", credits: 3 },
+    { code: "MATH UN1201", title: "Calculus III", credits: 3 },
+    { code: "MATH UN1205", title: "Accelerated Multivariable Calculus", credits: 4 },
+    { code: "STAT UN1201", title: "Intro to Statistics", credits: 3 },
+    
+    // Core Courses
+    { code: "ECON UN1105", title: "Principles of Economics", credits: 4 },
+    { code: "ECON UN3211", title: "Intermediate Microeconomics", credits: 4 },
+    { code: "ECON UN3213", title: "Intermediate Macroeconomics", credits: 4 },
+    { code: "ECON UN3412", title: "Introduction to Econometrics", credits: 4 },
+    
+    // Electives (sample)
+    { code: "ECON UN2105", title: "Economics Elective (2000-level)", credits: 3 },
+    { code: "ECON UN3251", title: "Economics Elective (3000-level)", credits: 3 },
+    { code: "ECON UN3265", title: "Economics Elective (3000-level)", credits: 3 },
+    { code: "ECON UN3952", title: "Economics Elective (3000-level)", credits: 3 },
+    { code: "ECON GU4370", title: "Economics Elective (4000-level)", credits: 3 },
+    
+    // Seminars
+    { code: "ECON GU4911", title: "Seminar in Microeconomics", credits: 4 },
+    { code: "ECON GU4913", title: "Seminar in Macroeconomics", credits: 4 },
+    { code: "ECON GU4918", title: "Seminar in Econometrics", credits: 4 },
+    { code: "ECON GU4921", title: "Seminar in Political Economy", credits: 4 },
   ];
 
   return (
@@ -44,85 +62,187 @@ export default function Index() {
 
       <main className="container mx-auto max-w-6xl px-4 py-8">
         <ProgressSummary completedCourses={completedCourses} allCourses={allCourses} />
-
+        
         <RequirementSection
-          title="Core Requirements"
-          description="These foundational courses are required for all Economics majors"
+          title="I. Quantitative Requirements"
+          description="Mathematical foundation courses required for the Economics major"
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
         >
           <CourseCard
-            code="ECON 101"
-            title="Principles of Microeconomics"
-            credits={4}
-            description="Introduction to economic principles governing individual decision-making in a market economy."
+            code="MATH UN1101"
+            title="Calculus I"
+            credits={3}
+            description="Introduction to differential calculus of functions of one variable."
           />
           <CourseCard
-            code="ECON 102"
-            title="Principles of Macroeconomics"
-            credits={4}
-            prerequisites={["ECON 101"]}
-            description="Study of aggregate economic behavior and national economic performance."
+            code="MATH UN1102"
+            title="Calculus II"
+            credits={3}
+            description="Introduction to integral calculus of functions of one variable."
           />
           <CourseCard
-            code="ECON 301"
+            code="MATH UN1201"
+            title="Calculus III"
+            credits={3}
+            prerequisites={["MATH UN1102"]}
+            description="Vector functions, partial differentiation, multiple integrals."
+          />
+          <CourseCard
+            code="MATH UN1205"
+            title="Accelerated Multivariable Calculus"
+            credits={4}
+            prerequisites={["MATH UN1102"]}
+            description="Accelerated version of Calculus III covering multivariable calculus and linear algebra."
+          />
+          <CourseCard
+            code="STAT UN1201"
+            title="Intro to Statistics"
+            credits={3}
+            description="Introduction to statistics with applications to the social sciences."
+          />
+        </RequirementSection>
+
+        <RequirementSection
+          title="II. Core Courses"
+          description="These foundational courses are required for all Economics majors (must be completed by Spring of Junior Year)"
+          completedCourses={completedCourses}
+          onCourseToggle={handleCourseToggle}
+        >
+          <CourseCard
+            code="ECON UN1105"
+            title="Principles of Economics"
+            credits={4}
+            description="Introduction to economic concepts, theories, and analytical techniques."
+          />
+          <CourseCard
+            code="ECON UN3211"
             title="Intermediate Microeconomics"
             credits={4}
-            prerequisites={["ECON 101", "MATH 120"]}
-            description="Advanced analysis of supply and demand, consumer behavior, and market structures."
+            prerequisites={["ECON UN1105", "MATH UN1201"]}
+            description="Analysis of consumer and firm behavior, market structures, and welfare economics."
+          />
+          <CourseCard
+            code="ECON UN3213"
+            title="Intermediate Macroeconomics"
+            credits={4}
+            prerequisites={["ECON UN1105", "MATH UN1101"]}
+            description="Analysis of aggregate economic activity, long-run growth, and short-run fluctuations."
+          />
+          <CourseCard
+            code="ECON UN3412"
+            title="Introduction to Econometrics"
+            credits={4}
+            prerequisites={["ECON UN3211", "ECON UN3213", "MATH UN1201", "STAT UN1201"]}
+            description="Statistical methods applied to economic data analysis."
           />
         </RequirementSection>
 
         <RequirementSection
-          title="Mathematical Prerequisites"
-          description="Required mathematical foundation courses"
+          title="III. Electives"
+          description="5 courses required (at most 1 can be 2000-level, all 3000/4000-level electives require UN3211 + UN3213)"
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
         >
           <CourseCard
-            code="MATH 120"
-            title="Calculus I"
-            credits={4}
-            description="Introduction to differential and integral calculus of functions of one variable."
+            code="ECON UN2105"
+            title="Economics Elective (2000-level)"
+            credits={3}
+            prerequisites={["ECON UN1105"]}
+            description="2000-level economics elective course."
           />
           <CourseCard
-            code="STAT 210"
-            title="Statistical Methods"
-            credits={4}
-            prerequisites={["MATH 120"]}
-            description="Introduction to probability and statistical inference with applications in economics."
+            code="ECON UN3251"
+            title="Money and Banking"
+            credits={3}
+            prerequisites={["ECON UN3211", "ECON UN3213"]}
+            description="Analysis of financial markets and institutions."
+          />
+          <CourseCard
+            code="ECON UN3265"
+            title="Economics of Healthcare"
+            credits={3}
+            prerequisites={["ECON UN3211", "ECON UN3213"]}
+            description="Economic analysis of healthcare markets and policies."
+          />
+          <CourseCard
+            code="ECON UN3952"
+            title="International Trade"
+            credits={3}
+            prerequisites={["ECON UN3211", "ECON UN3213"]}
+            description="Analysis of international trade patterns and policies."
+          />
+          <CourseCard
+            code="ECON GU4370"
+            title="Political Economy"
+            credits={3}
+            prerequisites={["ECON UN3211", "ECON UN3213"]}
+            description="Analysis of political-economic interactions and institutions."
           />
         </RequirementSection>
 
         <RequirementSection
-          title="Upper Division Electives"
-          description="Choose four courses from the following list"
+          title="IV. Seminar Requirement"
+          description="Take one of the following seminars (Prerequisites: UN3211, UN3213, UN3412)"
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
         >
           <CourseCard
-            code="ECON 410"
-            title="International Economics"
+            code="ECON GU4911"
+            title="Seminar in Microeconomics"
             credits={4}
-            prerequisites={["ECON 301", "ECON 302"]}
-            description="Analysis of international trade and finance."
+            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412"]}
+            description="Advanced seminar on microeconomic topics."
           />
           <CourseCard
-            code="ECON 420"
-            title="Labor Economics"
+            code="ECON GU4913"
+            title="Seminar in Macroeconomics"
             credits={4}
-            prerequisites={["ECON 301"]}
-            description="Economic analysis of labor markets and wage determination."
+            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412"]}
+            description="Advanced seminar on macroeconomic topics."
           />
           <CourseCard
-            code="ECON 430"
-            title="Public Economics"
+            code="ECON GU4918"
+            title="Seminar in Econometrics"
             credits={4}
-            prerequisites={["ECON 301"]}
-            description="Economic analysis of government spending, taxation, and policy."
+            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412"]}
+            description="Advanced seminar on econometric methods."
           />
+          <CourseCard
+            code="ECON GU4921"
+            title="Seminar in Political Economy"
+            credits={4}
+            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412", "ECON GU4370"]}
+            description="Advanced seminar on political economy topics."
+          />
+        </RequirementSection>
+        
+        <RequirementSection
+          title="Additional Notes"
+          description="Important information about the Economics major requirements"
+          completedCourses={completedCourses}
+          onCourseToggle={handleCourseToggle}
+        >
+          <Card className="w-full p-4 bg-muted/50">
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Minimum 9 economics lecture courses, 5 must be taken in the Columbia Economics Department.</li>
+              <li>Barnard seminars don't count for the seminar requirement.</li>
+              <li>You must get a C- or higher in major classes, except for UN1105 which can be Pass/D/Fail.</li>
+              <li>No credit for courses taken before prerequisites.</li>
+              <li>Transfer credits must be approved by the department.</li>
+            </ul>
+          </Card>
         </RequirementSection>
       </main>
     </div>
   );
 }
+
+// Helper component for the notes section
+const Card = ({ className, children }: { className?: string, children: React.ReactNode }) => {
+  return (
+    <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}>
+      {children}
+    </div>
+  );
+};

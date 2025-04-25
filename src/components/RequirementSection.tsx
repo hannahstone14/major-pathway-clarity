@@ -13,6 +13,10 @@ interface RequirementSectionProps {
 // Define a type for props that the CourseCard component accepts
 interface CourseCardProps {
   code: string;
+  title: string;
+  credits: number;
+  prerequisites?: string[];
+  description: string;
   isCompleted?: boolean;
   onToggleComplete?: (code: string) => void;
 }
@@ -26,8 +30,9 @@ export function RequirementSection({
 }: RequirementSectionProps) {
   const childrenWithCompletion = React.Children.map(children, (child) => {
     if (React.isValidElement(child) && 'code' in child.props) {
+      // Use type assertion to handle the props correctly
       return React.cloneElement(child as React.ReactElement<CourseCardProps>, {
-        isCompleted: completedCourses.includes(child.props.code as string),
+        isCompleted: completedCourses.includes((child.props as CourseCardProps).code),
         onToggleComplete: onCourseToggle
       });
     }
