@@ -46,6 +46,8 @@ export default function Index() {
     "ECON GU4921"
   ];
 
+  const additionalNotesRequirements: string[] = [];
+
   const allCourses = [
     // Quantitative Requirements
     { code: "MATH UN1101", title: "Calculus I", credits: 3 },
@@ -262,6 +264,7 @@ export default function Index() {
           description="Important information about the Economics major requirements"
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
+          requiredCourses={additionalNotesRequirements}
         >
           <Card className="w-full p-4 bg-muted/50">
             <ul className="list-disc pl-5 space-y-2">
