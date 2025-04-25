@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
+import { CourseOption } from "@/components/CourseOption";
 import { RequirementSection } from "@/components/RequirementSection";
 import { ProgressSummary } from "@/components/ProgressSummary";
 import { Calendar } from "lucide-react";
 
 export default function Index() {
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<{ [key: string]: string }>({});
 
   const handleCourseToggle = (code: string) => {
     setCompletedCourses(prev => 
@@ -15,6 +17,13 @@ export default function Index() {
         ? prev.filter(c => c !== code)
         : [...prev, code]
     );
+  };
+
+  const handleCourseSelect = (optionId: string, courseCode: string) => {
+    setSelectedCourses(prev => ({
+      ...prev,
+      [optionId]: courseCode
+    }));
   };
 
   const allCourses = [
@@ -69,31 +78,49 @@ export default function Index() {
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
         >
-          <CourseCard
-            code="MATH UN1101"
-            title="Calculus I"
-            credits={3}
-            description="Introduction to differential calculus of functions of one variable."
+          <CourseOption
+            title="Calculus I or II"
+            courses={[
+              {
+                code: "MATH UN1101",
+                title: "Calculus I",
+                credits: 3,
+                description: "Introduction to differential calculus of functions of one variable."
+              },
+              {
+                code: "MATH UN1102",
+                title: "Calculus II",
+                credits: 3,
+                description: "Introduction to integral calculus of functions of one variable."
+              }
+            ]}
+            selectedCourse={selectedCourses["calc1or2"]}
+            completedCourses={completedCourses}
+            onCourseSelect={(code) => handleCourseSelect("calc1or2", code)}
+            onCourseToggle={handleCourseToggle}
           />
-          <CourseCard
-            code="MATH UN1102"
-            title="Calculus II"
-            credits={3}
-            description="Introduction to integral calculus of functions of one variable."
-          />
-          <CourseCard
-            code="MATH UN1201"
-            title="Calculus III"
-            credits={3}
-            prerequisites={["MATH UN1102"]}
-            description="Vector functions, partial differentiation, multiple integrals."
-          />
-          <CourseCard
-            code="MATH UN1205"
-            title="Accelerated Multivariable Calculus"
-            credits={4}
-            prerequisites={["MATH UN1102"]}
-            description="Accelerated version of Calculus III covering multivariable calculus and linear algebra."
+          <CourseOption
+            title="Calculus III or Accelerated Multivariable Calculus"
+            courses={[
+              {
+                code: "MATH UN1201",
+                title: "Calculus III",
+                credits: 3,
+                prerequisites: ["MATH UN1102"],
+                description: "Vector functions, partial differentiation, multiple integrals."
+              },
+              {
+                code: "MATH UN1205",
+                title: "Accelerated Multivariable Calculus",
+                credits: 4,
+                prerequisites: ["MATH UN1102"],
+                description: "Accelerated version of Calculus III covering multivariable calculus and linear algebra."
+              }
+            ]}
+            selectedCourse={selectedCourses["calc3"]}
+            completedCourses={completedCourses}
+            onCourseSelect={(code) => handleCourseSelect("calc3", code)}
+            onCourseToggle={handleCourseToggle}
           />
           <CourseCard
             code="STAT UN1201"
