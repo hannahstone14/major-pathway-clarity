@@ -69,8 +69,12 @@ export default function Index() {
             </Button>
           </div>
         </header>
-        <div className="container mx-auto max-w-6xl px-4 py-4">
-          <ProgressSummary completedCourses={completedCourses} allCourses={allCourses} />
+        
+        <div className="container mx-auto max-w-6xl px-4 py-4 bg-background">
+          <ProgressSummary 
+            completedCourses={completedCourses} 
+            allCourses={allCourses} 
+          />
         </div>
       </div>
 
