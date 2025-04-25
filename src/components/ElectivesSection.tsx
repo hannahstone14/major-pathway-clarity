@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BookOpen } from "lucide-react";
 import { toast } from "sonner";
+import { getRemainingPrerequisites } from "@/utils/prerequisiteUtils";
 
 interface Elective {
   code: string;
@@ -105,11 +106,6 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
     onCourseToggle(code);
   };
 
-  const getRemainingPrerequisites = (prerequisites: string[] | undefined): string[] => {
-    if (!prerequisites) return [];
-    return prerequisites.filter(prereq => !completedCourses.includes(prereq));
-  };
-
   const allElectives = [...ELECTIVES_2000, ...ELECTIVES_3000_4000].sort((a, b) => a.code.localeCompare(b.code));
 
   const totalCredits = allElectives
@@ -131,7 +127,7 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
         <ScrollArea className="h-[520px] rounded-md border p-4">
           <div className="space-y-2">
             {allElectives.map((elective) => {
-              const remainingPrereqs = getRemainingPrerequisites(elective.prerequisites);
+              const remainingPrereqs = getRemainingPrerequisites(elective.prerequisites, completedCourses);
               
               return (
                 <div key={elective.code} className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg">

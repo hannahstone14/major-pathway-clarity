@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getRemainingPrerequisites } from "@/utils/prerequisiteUtils";
 
 interface CourseCardProps {
   code: string;
@@ -10,6 +11,7 @@ interface CourseCardProps {
   description: string;
   isCompleted?: boolean;
   onToggleComplete?: (code: string) => void;
+  completedCourses: string[];
 }
 
 export function CourseCard({ 
@@ -19,7 +21,8 @@ export function CourseCard({
   prerequisites, 
   description,
   isCompleted = false,
-  onToggleComplete
+  onToggleComplete,
+  completedCourses
 }: CourseCardProps) {
   return (
     <Card className={`w-full hover:shadow-md transition-all ${isCompleted ? 'border-green-500 shadow-green-100 opacity-60' : ''}`}>
@@ -35,7 +38,13 @@ export function CourseCard({
         {prerequisites && prerequisites.length > 0 && (
           <div className="mt-2">
             <span className="text-xs font-semibold text-secondary">Prerequisites: </span>
-            <span className="text-xs text-muted-foreground">{prerequisites.join(", ")}</span>
+            {getRemainingPrerequisites(prerequisites, completedCourses).length === 0 ? (
+              <span className="text-xs text-green-600">All prerequisites met</span>
+            ) : (
+              <span className="text-xs text-muted-foreground">
+                {getRemainingPrerequisites(prerequisites, completedCourses).join(", ")}
+              </span>
+            )}
           </div>
         )}
         {onToggleComplete && (
