@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
@@ -26,6 +25,26 @@ export default function Index() {
       [optionId]: courseCode
     }));
   };
+
+  const quantitativeRequirements = [
+    "MATH UN1101", "MATH UN1102", // Either one counts
+    "MATH UN1201", "MATH UN1205", // Either one counts
+    "STAT UN1201"
+  ];
+
+  const coreRequirements = [
+    "ECON UN1105", "ECON AP/IB", // Either one counts
+    "ECON UN3211",
+    "ECON UN3213",
+    "ECON UN3412"
+  ];
+
+  const seminarRequirements = [
+    "ECON GU4911",
+    "ECON GU4913",
+    "ECON GU4918",
+    "ECON GU4921"
+  ];
 
   const allCourses = [
     // Quantitative Requirements
@@ -78,6 +97,7 @@ export default function Index() {
           description="Mathematical foundation courses required for the Economics major"
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
+          requiredCourses={quantitativeRequirements}
         >
           <CourseOption
             title="Calculus I or II"
@@ -137,6 +157,7 @@ export default function Index() {
           description="These foundational courses are required for all Economics majors (must be completed by Spring of Junior Year)"
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
+          requiredCourses={coreRequirements}
         >
           <CourseOption
             title="Principles of Economics"
@@ -195,6 +216,7 @@ export default function Index() {
           description="Take one of the following seminars (Prerequisites: UN3211, UN3213, UN3412)"
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
+          requiredCourses={seminarRequirements}
         >
           <CourseOption
             title="Choose one seminar"
