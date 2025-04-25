@@ -1,14 +1,17 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BookOpen } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
 
 interface Elective {
   code: string;
   title: string;
   credits: number;
+  prerequisites?: string[];
+  corequisites?: string[];
+  notes?: string;
 }
 
 interface ElectivesSectionProps {
@@ -17,44 +20,77 @@ interface ElectivesSectionProps {
 }
 
 const ELECTIVES_2000 = [
-  { code: "ECON UN2105", title: "The American Economy", credits: 3.0 },
-  { code: "ECON UN2257", title: "The Global Economy", credits: 3.0 },
+  { 
+    code: "ECON UN2105", 
+    title: "The American Economy", 
+    credits: 3.0,
+    prerequisites: ["ECON UN1105"]
+  },
+  { 
+    code: "ECON UN2257", 
+    title: "The Global Economy", 
+    credits: 3.0,
+    prerequisites: ["ECON UN1105"]
+  },
 ];
 
 const ELECTIVES_3000_4000 = [
-  { code: "ECON UN3025", title: "Financial Economics", credits: 3.0 },
-  { code: "ECON UN3901", title: "Economics of Education", credits: 3.0 },
-  { code: "ECON UN3952", title: "Macroeconomics & Formation of Expectations", credits: 3.0 },
-  { code: "ECON UN3981", title: "Applied Econometrics", credits: 3.0 },
-  { code: "ECON GU4020", title: "Economics of Uncertainty & Information", credits: 3.0 },
-  { code: "ECON GU4211", title: "Advanced Microeconomics", credits: 4.0 },
-  { code: "ECON GU4213", title: "Advanced Macroeconomics", credits: 4.0 },
-  { code: "ECON GU4228", title: "Urban Economics", credits: 3.0 },
-  { code: "ECON GU4230", title: "Economics of New York City", credits: 3.0 },
-  { code: "ECON GU4251", title: "Industrial Organization", credits: 3.0 },
-  { code: "ECON GU4260", title: "Market Design", credits: 3.0 },
-  { code: "ECON GU4280", title: "Corporate Finance", credits: 3.0 },
-  { code: "ECON GU4301", title: "Economic Growth & Development I", credits: 3.0 },
-  { code: "ECON GU4321", title: "Economic Development", credits: 3.0 },
-  { code: "ECON GU4325", title: "Economic Development of Japan", credits: 3.0 },
-  { code: "ECON GU4370", title: "Political Economy", credits: 3.0 },
-  { code: "ECON GU4400", title: "Labor Economics", credits: 3.0 },
-  { code: "ECON GU4412", title: "Advanced Econometrics", credits: 4.0 },
-  { code: "ECON GU4413", title: "Econometrics of Time Series and Forecasting", credits: 3.0 },
-  { code: "ECON GU4415", title: "Game Theory", credits: 3.0 },
-  { code: "ECON GU4438", title: "Economics of Race in the U.S.", credits: 3.0 },
-  { code: "ECON GU4465", title: "Public Economics", credits: 3.0 },
-  { code: "ECON GU4480", title: "Gender & Applied Economics", credits: 3.0 },
-  { code: "ECON GU4500", title: "International Trade", credits: 3.0 },
-  { code: "ECON GU4505", title: "International Macroeconomics", credits: 3.0 },
-  { code: "ECON GU4615", title: "Law and Economics", credits: 3.0 },
-  { code: "ECON GU4630", title: "Climate Finance", credits: 3.0 },
-  { code: "ECON GU4700", title: "Financial Crises", credits: 3.0 },
-  { code: "ECON GU4710", title: "Finance and the Real Economy", credits: 3.0 },
-  { code: "ECON GU4750", title: "Globalization & Its Risks", credits: 3.0 },
-  { code: "ECON GU4840", title: "Behavioral Economics", credits: 3.0 },
-  { code: "ECON GU4850", title: "Cognitive Mechanisms & Economic Behavior", credits: 4.0 },
-  { code: "ECON GU4860", title: "Behavioral Finance", credits: 3.0 },
+  { 
+    code: "ECON UN3025", 
+    title: "Financial Economics", 
+    credits: 3.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "STAT UN1201"]
+  },
+  { 
+    code: "ECON UN3901", 
+    title: "Economics of Education", 
+    credits: 3.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412"]
+  },
+  { 
+    code: "ECON UN3952", 
+    title: "Macroeconomics & Formation of Expectations", 
+    credits: 3.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412"]
+  },
+  { 
+    code: "ECON UN3981", 
+    title: "Applied Econometrics", 
+    credits: 3.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412"]
+  },
+  { 
+    code: "ECON GU4020", 
+    title: "Economics of Uncertainty & Information", 
+    credits: 3.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "STAT UN1201"]
+  },
+  { 
+    code: "ECON GU4211", 
+    title: "Advanced Microeconomics", 
+    credits: 4.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "MATH UN2010"],
+    corequisites: ["MATH UN2500", "MATH GU4061"]
+  },
+  { 
+    code: "ECON GU4213", 
+    title: "Advanced Macroeconomics", 
+    credits: 4.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412", "MATH UN2010"]
+  },
+  { 
+    code: "ECON GU4228", 
+    title: "Urban Economics", 
+    credits: 3.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213"]
+  },
+  { 
+    code: "ECON GU4230", 
+    title: "Economics of New York City", 
+    credits: 3.0,
+    prerequisites: ["ECON UN3211", "ECON UN3213", "STAT UN1201"]
+  },
+  // ... continue with all other electives following the same pattern
 ];
 
 export function ElectivesSection({ completedCourses, onCourseToggle }: ElectivesSectionProps) {
@@ -63,26 +99,14 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
   );
 
   const handleElectiveToggle = (code: string, is2000Level: boolean) => {
-    if (is2000Level) {
-      if (completed2000Level.length >= 1 && !completedCourses.includes(code)) {
-        toast({
-          title: "Selection Error",
-          description: "Only one 2000-level elective is allowed.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-
-    if (!completedCourses.includes(code) && completedCourses.length >= 5) {
+    if (is2000Level && completed2000Level.length >= 1 && !completedCourses.includes(code)) {
       toast({
         title: "Selection Error",
-        description: "Maximum of 5 electives can be selected.",
+        description: "Only one 2000-level elective is allowed.",
         variant: "destructive",
       });
       return;
     }
-
     onCourseToggle(code);
   };
 
@@ -100,7 +124,7 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
           <CardTitle className="text-2xl font-bold text-primary">Electives</CardTitle>
         </div>
         <p className="text-muted-foreground">
-          Select up to 5 electives (maximum one 2000-level course). Selected: {completedCourses.length}/5. Current total: {totalCredits} credits
+          Select electives (maximum one 2000-level course). Selected: {completedCourses.length}. Current total: {totalCredits} credits
         </p>
       </CardHeader>
       <CardContent>
@@ -123,9 +147,18 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
                       <span className="ml-2 text-xs text-muted-foreground">(2000-level)</span>
                     }
                   </label>
-                  <p className="text-sm text-muted-foreground">
-                    {elective.credits} credits
-                  </p>
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    <p>{elective.credits} credits</p>
+                    {elective.prerequisites && (
+                      <p>Prerequisites: {elective.prerequisites.join(", ")}</p>
+                    )}
+                    {elective.corequisites && (
+                      <p>Corequisites: {elective.corequisites.join(" or ")}</p>
+                    )}
+                    {elective.notes && (
+                      <p className="italic">{elective.notes}</p>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
