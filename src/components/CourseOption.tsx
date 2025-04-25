@@ -3,6 +3,8 @@ import React from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface Course {
   code: string;
@@ -30,40 +32,55 @@ export function CourseOption({
   onCourseToggle,
 }: CourseOptionProps) {
   const isCompleted = selectedCourse && completedCourses.includes(selectedCourse);
-  
+
   const handleRadioChange = (value: string) => {
     if (value === selectedCourse) {
-      // If clicking the same option, unselect it and remove from completed
+      return; // Don't do anything if clicking the same radio button
+    }
+    
+    // Remove any previously completed course from this option group
+    courses.forEach(course => {
+      if (completedCourses.includes(course.code)) {
+        onCourseToggle(course.code);
+      }
+    });
+    
+    // Select the new course
+    onCourseSelect(value);
+    
+    // If the course is not already in the completed list, add it
+    if (!completedCourses.includes(value)) {
+      onCourseToggle(value);
+    }
+  };
+
+  const handleClear = () => {
+    if (selectedCourse) {
+      if (completedCourses.includes(selectedCourse)) {
+        onCourseToggle(selectedCourse);
+      }
       onCourseSelect("");
-      if (completedCourses.includes(value)) {
-        onCourseToggle(value);
-      }
-    } else {
-      // Remove any previously completed course from this option group
-      courses.forEach(course => {
-        if (completedCourses.includes(course.code)) {
-          onCourseToggle(course.code);
-        }
-      });
-      
-      // Select the new course
-      onCourseSelect(value);
-      
-      // If the course is not already in the completed list, add it
-      if (!completedCourses.includes(value)) {
-        onCourseToggle(value);
-      }
     }
   };
 
   return (
     <Card 
       className={`w-full hover:shadow-md transition-all ${
-        isCompleted ? 'border-green-500 shadow-green-100' : ''
+        isCompleted ? 'border-green-500 shadow-green-100 opacity-60' : ''
       }`}
     >
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-lg font-semibold text-primary">{title}</CardTitle>
+        {selectedCourse && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-8 w-8 p-0"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </CardHeader>
       <CardContent>
         <RadioGroup
@@ -89,4 +106,3 @@ export function CourseOption({
     </Card>
   );
 }
-
