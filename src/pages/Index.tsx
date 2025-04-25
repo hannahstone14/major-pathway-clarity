@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
@@ -127,6 +128,7 @@ export default function Index() {
             title="Intro to Statistics"
             credits={3}
             description="Introduction to statistics with applications to the social sciences. Higher level alternatives: STAT UN4204, STAT GU4001"
+            completedCourses={completedCourses}
           />
         </RequirementSection>
 
@@ -163,6 +165,7 @@ export default function Index() {
             credits={4}
             prerequisites={["ECON UN1105", "MATH UN1201"]}
             description="Analysis of consumer and firm behavior, market structures, and welfare economics."
+            completedCourses={completedCourses}
           />
           <CourseCard
             code="ECON UN3213"
@@ -170,6 +173,7 @@ export default function Index() {
             credits={4}
             prerequisites={["ECON UN1105", "MATH UN1101"]}
             description="Analysis of aggregate economic activity, long-run growth, and short-run fluctuations."
+            completedCourses={completedCourses}
           />
           <CourseCard
             code="ECON UN3412"
@@ -177,6 +181,7 @@ export default function Index() {
             credits={4}
             prerequisites={["ECON UN3211", "ECON UN3213", "MATH UN1201", "STAT UN1201"]}
             description="Statistical methods applied to economic data analysis."
+            completedCourses={completedCourses}
           />
         </RequirementSection>
 
