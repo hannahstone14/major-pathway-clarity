@@ -4,6 +4,8 @@ export const getRemainingPrerequisites = (prerequisites: string[] | undefined, c
   
   // Handle alternative prerequisites (courses that fulfill the same requirement)
   const alternativeMappings: { [key: string]: string[] } = {
+    "MATH UN1101": ["MATH UN1102"],  // Calc I or Calc II
+    "MATH UN1102": ["MATH UN1101"],  // Calc II or Calc I
     "MATH UN1201": ["MATH UN1205"],  // Calc III or Accelerated Multi
     "MATH UN1205": ["MATH UN1201"],  // Accelerated Multi or Calc III
   };
