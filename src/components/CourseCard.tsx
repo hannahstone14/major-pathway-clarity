@@ -1,5 +1,7 @@
 
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CourseCardProps {
   code: string;
@@ -7,11 +9,21 @@ interface CourseCardProps {
   credits: number;
   prerequisites?: string[];
   description: string;
+  isCompleted?: boolean;
+  onToggleComplete?: (code: string) => void;
 }
 
-export function CourseCard({ code, title, credits, prerequisites, description }: CourseCardProps) {
+export function CourseCard({ 
+  code, 
+  title, 
+  credits, 
+  prerequisites, 
+  description,
+  isCompleted = false,
+  onToggleComplete
+}: CourseCardProps) {
   return (
-    <Card className="w-full hover:shadow-md transition-shadow">
+    <Card className={`w-full hover:shadow-md transition-shadow ${isCompleted ? 'border-green-500 shadow-green-100' : ''}`}>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <span className="font-mono text-lg">{code}</span>
@@ -25,6 +37,21 @@ export function CourseCard({ code, title, credits, prerequisites, description }:
           <div className="mt-2">
             <span className="text-xs font-semibold text-secondary">Prerequisites: </span>
             <span className="text-xs text-muted-foreground">{prerequisites.join(", ")}</span>
+          </div>
+        )}
+        {onToggleComplete && (
+          <div className="mt-4 flex items-center space-x-2">
+            <Checkbox 
+              id={`complete-${code}`} 
+              checked={isCompleted} 
+              onCheckedChange={() => onToggleComplete(code)}
+            />
+            <label 
+              htmlFor={`complete-${code}`}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Completed
+            </label>
           </div>
         )}
       </CardContent>
