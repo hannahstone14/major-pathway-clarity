@@ -9,12 +9,11 @@ interface RequirementSectionProps {
   children: React.ReactNode;
 }
 
-interface CompletableElement {
-  props: {
-    code: string;
-    isCompleted?: boolean;
-    onToggleComplete?: (code: string) => void;
-  }
+// Define a type for props that the CourseCard component accepts
+interface CourseCardProps {
+  code: string;
+  isCompleted?: boolean;
+  onToggleComplete?: (code: string) => void;
 }
 
 export function RequirementSection({ title, description, children }: RequirementSectionProps) {
@@ -22,8 +21,9 @@ export function RequirementSection({ title, description, children }: Requirement
 
   const childrenWithCompletion = React.Children.map(children, (child) => {
     if (React.isValidElement(child) && 'code' in child.props) {
-      return React.cloneElement(child as React.ReactElement<CompletableElement>, {
-        isCompleted: completed.includes((child as any).props.code),
+      // Cast the element to have the correct props type
+      return React.cloneElement(child as React.ReactElement<CourseCardProps>, {
+        isCompleted: completed.includes(child.props.code as string),
         onToggleComplete: (code: string) => {
           setCompleted(prev => 
             prev.includes(code) 
