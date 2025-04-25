@@ -8,6 +8,11 @@ import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
+// Determine the base URL for GitHub Pages or local development
+const basename = window.location.pathname.includes('major-pathway-clarity') 
+  ? '/major-pathway-clarity' 
+  : '';
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -15,7 +20,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/economics" element={<Index />} />
