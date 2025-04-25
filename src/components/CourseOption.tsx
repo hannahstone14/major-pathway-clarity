@@ -29,27 +29,38 @@ export function CourseOption({
   onCourseSelect,
   onCourseToggle,
 }: CourseOptionProps) {
-  const isCompleted = courses.some(course => completedCourses.includes(course.code));
+  const isCompleted = selectedCourse && completedCourses.includes(selectedCourse);
+  
+  const handleRadioChange = (value: string) => {
+    // First remove any previously completed course from this option group
+    courses.forEach(course => {
+      if (completedCourses.includes(course.code)) {
+        onCourseToggle(course.code); // Remove from completed
+      }
+    });
+    
+    // Then select the new course
+    onCourseSelect(value);
+    
+    // If the course is not already in the completed list, add it
+    if (!completedCourses.includes(value)) {
+      onCourseToggle(value); // Add to completed
+    }
+  };
 
   return (
-    <Card className={`w-full hover:shadow-md transition-shadow ${isCompleted ? 'border-green-500 shadow-green-100' : ''}`}>
+    <Card 
+      className={`w-full hover:shadow-md transition-all ${
+        isCompleted ? 'border-green-500 shadow-green-100 opacity-60' : ''
+      }`}
+    >
       <CardHeader>
         <CardTitle className="text-lg font-semibold text-primary">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <RadioGroup
           value={selectedCourse}
-          onValueChange={(value) => {
-            if (completedCourses.some(code => courses.map(c => c.code).includes(code))) {
-              // If any course in this option group was completed, remove it
-              courses.forEach(course => {
-                if (completedCourses.includes(course.code)) {
-                  onCourseToggle(course.code);
-                }
-              });
-            }
-            onCourseSelect(value);
-          }}
+          onValueChange={handleRadioChange}
         >
           {courses.map((course) => (
             <div key={course.code} className="flex items-center space-x-2 mb-4">
