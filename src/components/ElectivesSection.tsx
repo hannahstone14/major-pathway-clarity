@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -91,7 +90,6 @@ const ELECTIVES_3000_4000: Elective[] = [
     credits: 3.0,
     prerequisites: ["ECON UN3211", "ECON UN3213", "STAT UN1201"]
   },
-  // ... continue with all other electives following the same pattern
 ];
 
 export function ElectivesSection({ completedCourses, onCourseToggle }: ElectivesSectionProps) {
@@ -105,6 +103,11 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
       return;
     }
     onCourseToggle(code);
+  };
+
+  const getRemainingPrerequisites = (prerequisites: string[] | undefined): string[] => {
+    if (!prerequisites) return [];
+    return prerequisites.filter(prereq => !completedCourses.includes(prereq));
   };
 
   const allElectives = [...ELECTIVES_2000, ...ELECTIVES_3000_4000].sort((a, b) => a.code.localeCompare(b.code));
@@ -121,44 +124,54 @@ export function ElectivesSection({ completedCourses, onCourseToggle }: Electives
           <CardTitle className="text-2xl font-bold text-primary">Electives</CardTitle>
         </div>
         <p className="text-muted-foreground">
-          Select electives (maximum one 2000-level course). Selected: {completedCourses.length}. Current total: {totalCredits} credits
+          Select electives. Selected: {completedCourses.length}. Current total: {totalCredits} credits
         </p>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[520px] rounded-md border p-4">
           <div className="space-y-2">
-            {allElectives.map((elective) => (
-              <div key={elective.code} className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg">
-                <Checkbox
-                  id={elective.code}
-                  checked={completedCourses.includes(elective.code)}
-                  onCheckedChange={() => handleElectiveToggle(elective.code, ELECTIVES_2000.some(e => e.code === elective.code))}
-                />
-                <div className="grid gap-1.5 leading-none">
-                  <label
-                    htmlFor={elective.code}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {elective.code} - {elective.title}
-                    {ELECTIVES_2000.some(e => e.code === elective.code) && 
-                      <span className="ml-2 text-xs text-muted-foreground">(2000-level)</span>
-                    }
-                  </label>
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    <p>{elective.credits} credits</p>
-                    {elective.prerequisites && (
-                      <p>Prerequisites: {elective.prerequisites.join(", ")}</p>
-                    )}
-                    {elective.corequisites && (
-                      <p>Corequisites: {elective.corequisites.join(" or ")}</p>
-                    )}
-                    {elective.notes && (
-                      <p className="italic">{elective.notes}</p>
-                    )}
+            {allElectives.map((elective) => {
+              const remainingPrereqs = getRemainingPrerequisites(elective.prerequisites);
+              
+              return (
+                <div key={elective.code} className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg">
+                  <Checkbox
+                    id={elective.code}
+                    checked={completedCourses.includes(elective.code)}
+                    onCheckedChange={() => handleElectiveToggle(elective.code, ELECTIVES_2000.some(e => e.code === elective.code))}
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <label
+                      htmlFor={elective.code}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {elective.code} - {elective.title}
+                      {ELECTIVES_2000.some(e => e.code === elective.code) && 
+                        <span className="ml-2 text-xs text-muted-foreground">(2000-level)</span>
+                      }
+                    </label>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <p>{elective.credits} credits</p>
+                      {elective.prerequisites && (
+                        <p>
+                          Prerequisites: {
+                            remainingPrereqs.length === 0 
+                              ? <span className="text-green-600">All prerequisites met</span>
+                              : remainingPrereqs.join(", ")
+                          }
+                        </p>
+                      )}
+                      {elective.corequisites && (
+                        <p>Corequisites: {elective.corequisites.join(" or ")}</p>
+                      )}
+                      {elective.notes && (
+                        <p className="italic">{elective.notes}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </ScrollArea>
       </CardContent>
