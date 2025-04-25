@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
@@ -126,7 +125,7 @@ export default function Index() {
             code="STAT UN1201"
             title="Intro to Statistics"
             credits={3}
-            description="Introduction to statistics with applications to the social sciences."
+            description="Introduction to statistics with applications to the social sciences. Higher level alternatives: STAT UN4204, STAT GU4001"
           />
         </RequirementSection>
 
@@ -136,11 +135,26 @@ export default function Index() {
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
         >
-          <CourseCard
-            code="ECON UN1105"
+          <CourseOption
             title="Principles of Economics"
-            credits={4}
-            description="Introduction to economic concepts, theories, and analytical techniques."
+            courses={[
+              {
+                code: "ECON UN1105",
+                title: "Principles of Economics",
+                credits: 4,
+                description: "Introduction to economic concepts and theories. This is the only major class that can be taken Pass/D/Fail."
+              },
+              {
+                code: "ECON AP/IB",
+                title: "AP/IB Credit",
+                credits: 4,
+                description: "AP/IB credit can fulfill the Principles of Economics requirement."
+              }
+            ]}
+            selectedCourse={selectedCourses["principles"]}
+            completedCourses={completedCourses}
+            onCourseSelect={(code) => handleCourseSelect("principles", code)}
+            onCourseToggle={handleCourseToggle}
           />
           <CourseCard
             code="ECON UN3211"
@@ -214,33 +228,42 @@ export default function Index() {
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
         >
-          <CourseCard
-            code="ECON GU4911"
-            title="Seminar in Microeconomics"
-            credits={4}
-            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412"]}
-            description="Advanced seminar on microeconomic topics."
-          />
-          <CourseCard
-            code="ECON GU4913"
-            title="Seminar in Macroeconomics"
-            credits={4}
-            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412"]}
-            description="Advanced seminar on macroeconomic topics."
-          />
-          <CourseCard
-            code="ECON GU4918"
-            title="Seminar in Econometrics"
-            credits={4}
-            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412"]}
-            description="Advanced seminar on econometric methods."
-          />
-          <CourseCard
-            code="ECON GU4921"
-            title="Seminar in Political Economy"
-            credits={4}
-            prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412", "ECON GU4370"]}
-            description="Advanced seminar on political economy topics."
+          <CourseOption
+            title="Choose one seminar"
+            courses={[
+              {
+                code: "ECON GU4911",
+                title: "Seminar in Microeconomics",
+                credits: 4,
+                prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412"],
+                description: "Advanced seminar on microeconomic topics."
+              },
+              {
+                code: "ECON GU4913",
+                title: "Seminar in Macroeconomics",
+                credits: 4,
+                prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412"],
+                description: "Advanced seminar on macroeconomic topics."
+              },
+              {
+                code: "ECON GU4918",
+                title: "Seminar in Econometrics",
+                credits: 4,
+                prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412"],
+                description: "Advanced seminar on econometric methods."
+              },
+              {
+                code: "ECON GU4921",
+                title: "Seminar in Political Economy",
+                credits: 4,
+                prerequisites: ["ECON UN3211", "ECON UN3213", "ECON UN3412", "ECON GU4370"],
+                description: "Advanced seminar on political economy topics."
+              }
+            ]}
+            selectedCourse={selectedCourses["seminar"]}
+            completedCourses={completedCourses}
+            onCourseSelect={(code) => handleCourseSelect("seminar", code)}
+            onCourseToggle={handleCourseToggle}
           />
         </RequirementSection>
         

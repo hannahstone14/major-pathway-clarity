@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,7 +22,7 @@ export function CourseCard({
   onToggleComplete
 }: CourseCardProps) {
   return (
-    <Card className={`w-full hover:shadow-md transition-shadow ${isCompleted ? 'border-green-500 shadow-green-100' : ''}`}>
+    <Card className={`w-full hover:shadow-md transition-all ${isCompleted ? 'border-green-500 shadow-green-100 opacity-60' : ''}`}>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <span className="font-mono text-lg">{code}</span>
