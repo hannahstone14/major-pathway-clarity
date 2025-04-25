@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
@@ -225,6 +224,7 @@ export default function Index() {
               }
             ]}
             selectedCourse={selectedCourses["seminar"]}
+            completedCourses={completedCourses}  
             onCourseSelect={(code) => handleCourseSelect("seminar", code)}
             onCourseToggle={handleCourseToggle}
           />
@@ -251,7 +251,6 @@ export default function Index() {
   );
 }
 
-// Helper component for the notes section
 const Card = ({ className, children }: { className?: string, children: React.ReactNode }) => {
   return (
     <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}>
