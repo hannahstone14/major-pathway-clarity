@@ -29,8 +29,15 @@ export function CourseCard({
   onRemoveFromSchedule
 }: CourseCardProps) {
   const remainingPrereqs = getRemainingPrerequisites(prerequisites || [], completedCourses);
+  const isComplete = completedCourses.includes(code);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    // Don't allow dragging if course is completed
+    if (isComplete) {
+      e.preventDefault();
+      return;
+    }
+
     e.dataTransfer.setData("application/json", JSON.stringify({
       code,
       title,
@@ -42,9 +49,12 @@ export function CourseCard({
 
   return (
     <div 
-      draggable={!isScheduled}
+      draggable={!isScheduled && !isComplete}
       onDragStart={handleDragStart}
-      className={`flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg ${!isScheduled ? 'cursor-move' : ''} border border-transparent hover:border-border`}
+      className={`flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg 
+        ${!isScheduled && !isComplete ? 'cursor-move' : ''} 
+        ${isComplete ? 'opacity-50' : ''}
+        border border-transparent hover:border-border`}
     >
       <Checkbox
         id={code}
