@@ -186,7 +186,7 @@ export default function SchedulePlanner() {
                             onRemoveFromSchedule={() => handleRemoveCourse(year, 'fall', i)}
                           />
                         ) : (
-                          "Drop course here"
+                          i === 0 ? "Drop course here" : ""
                         )}
                       </TableCell>
                     </TableRow>
@@ -218,7 +218,7 @@ export default function SchedulePlanner() {
                             onRemoveFromSchedule={() => handleRemoveCourse(year, 'spring', i)}
                           />
                         ) : (
-                          "Drop course here"
+                          i === 0 ? "Drop course here" : ""
                         )}
                       </TableCell>
                     </TableRow>
