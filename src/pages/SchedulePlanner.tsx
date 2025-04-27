@@ -6,6 +6,12 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -148,76 +154,82 @@ export default function SchedulePlanner() {
   };
 
   const YearTable = ({ year }: { year: string }) => (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle>{year} Year</CardTitle>
-      </CardHeader>
-      <CardContent className="flex gap-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold mb-2">Fall Semester</h3>
-          <Table>
-            <TableBody>
-              {[...Array(6)].map((_, i) => (
-                <TableRow key={`fall-${i}`}>
-                  <TableCell 
-                    className="h-12 border border-border"
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, year, 'fall', i)}
-                  >
-                    {schedule[year]?.fall[i] ? (
-                      <CourseCard 
-                        code={schedule[year].fall[i]!.code}
-                        title={schedule[year].fall[i]!.title}
-                        credits={schedule[year].fall[i]!.credits}
-                        prerequisites={schedule[year].fall[i]!.prerequisites}
-                        description={schedule[year].fall[i]!.description}
-                        completedCourses={completedCourses}
-                        isScheduled={true}
-                        onRemoveFromSchedule={() => handleRemoveCourse(year, 'fall', i)}
-                      />
-                    ) : (
-                      "Drop course here"
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+    <AccordionItem value={year}>
+      <AccordionTrigger className="hover:no-underline">
+        <div className="flex items-center gap-2">
+          <span className="text-xl font-semibold">{year} Year</span>
         </div>
-        <Separator orientation="vertical" />
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold mb-2">Spring Semester</h3>
-          <Table>
-            <TableBody>
-              {[...Array(6)].map((_, i) => (
-                <TableRow key={`spring-${i}`}>
-                  <TableCell 
-                    className="h-12 border border-border"
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, year, 'spring', i)}
-                  >
-                    {schedule[year]?.spring[i] ? (
-                      <CourseCard 
-                        code={schedule[year].spring[i]!.code}
-                        title={schedule[year].spring[i]!.title}
-                        credits={schedule[year].spring[i]!.credits}
-                        prerequisites={schedule[year].spring[i]!.prerequisites}
-                        description={schedule[year].spring[i]!.description}
-                        completedCourses={completedCourses}
-                        isScheduled={true}
-                        onRemoveFromSchedule={() => handleRemoveCourse(year, 'spring', i)}
-                      />
-                    ) : (
-                      "Drop course here"
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+      </AccordionTrigger>
+      <AccordionContent>
+        <Card className="mb-8">
+          <CardContent className="flex gap-4 pt-6">
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold mb-2">Fall Semester</h3>
+              <Table>
+                <TableBody>
+                  {[...Array(6)].map((_, i) => (
+                    <TableRow key={`fall-${i}`}>
+                      <TableCell 
+                        className="h-12 border border-border"
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, year, 'fall', i)}
+                      >
+                        {schedule[year]?.fall[i] ? (
+                          <CourseCard 
+                            code={schedule[year].fall[i]!.code}
+                            title={schedule[year].fall[i]!.title}
+                            credits={schedule[year].fall[i]!.credits}
+                            prerequisites={schedule[year].fall[i]!.prerequisites}
+                            description={schedule[year].fall[i]!.description}
+                            completedCourses={completedCourses}
+                            isScheduled={true}
+                            onRemoveFromSchedule={() => handleRemoveCourse(year, 'fall', i)}
+                          />
+                        ) : (
+                          "Drop course here"
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <Separator orientation="vertical" />
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold mb-2">Spring Semester</h3>
+              <Table>
+                <TableBody>
+                  {[...Array(6)].map((_, i) => (
+                    <TableRow key={`spring-${i}`}>
+                      <TableCell 
+                        className="h-12 border border-border"
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, year, 'spring', i)}
+                      >
+                        {schedule[year]?.spring[i] ? (
+                          <CourseCard 
+                            code={schedule[year].spring[i]!.code}
+                            title={schedule[year].spring[i]!.title}
+                            credits={schedule[year].spring[i]!.credits}
+                            prerequisites={schedule[year].spring[i]!.prerequisites}
+                            description={schedule[year].spring[i]!.description}
+                            completedCourses={completedCourses}
+                            isScheduled={true}
+                            onRemoveFromSchedule={() => handleRemoveCourse(year, 'spring', i)}
+                          />
+                        ) : (
+                          "Drop course here"
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </AccordionContent>
+    </AccordionItem>
   );
 
   return (
@@ -350,9 +362,11 @@ export default function SchedulePlanner() {
         <div className="flex-1">
           <h1 className="text-4xl font-bold mb-6">Schedule Planner</h1>
           <div className="max-w-[1200px] mx-auto">
-            {years.map((year) => (
-              <YearTable key={year} year={year} />
-            ))}
+            <Accordion type="single" collapsible className="w-full">
+              {years.map((year) => (
+                <YearTable key={year} year={year} />
+              ))}
+            </Accordion>
           </div>
         </div>
       </div>
