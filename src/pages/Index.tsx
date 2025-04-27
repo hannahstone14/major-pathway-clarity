@@ -1,3 +1,5 @@
+
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/CourseCard";
@@ -84,10 +86,12 @@ export default function Index() {
           <p className="text-lg opacity-90 max-w-2xl">
             Navigate your path through the Economics major with our comprehensive guide to course requirements, prerequisites, and recommended sequences.
           </p>
-          <Button variant="secondary" className="mt-6" size="lg">
-            <Calendar className="mr-2 h-4 w-4" />
-            Plan Your Schedule
-          </Button>
+          <Link to="/schedule-planner">
+            <Button variant="secondary" className="mt-6" size="lg">
+              <Calendar className="mr-2 h-4 w-4" />
+              Plan Your Schedule
+            </Button>
+          </Link>
         </div>
       </header>
 
