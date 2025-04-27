@@ -69,48 +69,62 @@ export default function SchedulePlanner() {
 
   const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, year: string, semester: 'fall' | 'spring', slot: number) => {
     e.preventDefault();
+    
+    // Try to get course data from regular drag
     const courseData = e.dataTransfer.getData("application/json");
-    if (!courseData) return;
-
-    const course: ScheduledCourse = JSON.parse(courseData);
-
-    // Check if course is already scheduled
-    for (const yearData of Object.values(schedule)) {
-      for (const semesterData of Object.values(yearData)) {
-        const scheduledCourses = Object.values(semesterData).filter(Boolean) as ScheduledCourse[];
-        if (scheduledCourses.some(c => c && c.code === course.code)) {
-          toast.error("This course is already scheduled");
-          return;
+    if (courseData) {
+      const course: ScheduledCourse = JSON.parse(courseData);
+      
+      // Check if course is already scheduled
+      for (const yearData of Object.values(schedule)) {
+        for (const semesterData of Object.values(yearData)) {
+          const scheduledCourses = Object.values(semesterData).filter(Boolean) as ScheduledCourse[];
+          if (scheduledCourses.some(c => c && c.code === course.code)) {
+            toast.error("This course is already scheduled");
+            return;
+          }
         }
       }
+
+      setSchedule(prev => ({
+        ...prev,
+        [year]: {
+          ...prev[year],
+          [semester]: {
+            ...prev[year][semester],
+            [slot]: course
+          }
+        }
+      }));
     }
 
-    setSchedule(prev => ({
-      ...prev,
-      [year]: {
-        ...prev[year],
-        [semester]: {
-          ...prev[year][semester],
-          [slot]: course
-        }
-      }
-    }));
+    // Try to get moved course data
+    const movedCourseData = e.dataTransfer.getData("move-course");
+    if (movedCourseData) {
+      const { course, sourceYear, sourceSemester, sourceSlot } = JSON.parse(movedCourseData);
+      
+      // Remove from old position
+      setSchedule(prev => {
+        const newSchedule = { ...prev };
+        newSchedule[sourceYear][sourceSemester][sourceSlot] = null;
+        newSchedule[year][semester][slot] = course;
+        return newSchedule;
+      });
+    }
   };
 
-  const handleScheduledCourseDragStart = (e: React.DragEvent<HTMLDivElement>, course: ScheduledCourse) => {
-    e.dataTransfer.setData("remove-course", JSON.stringify(course));
-  };
-
-  const handleRemoveCourse = (year: string, semester: 'fall' | 'spring', slot: number) => {
-    setSchedule(prev => ({
-      ...prev,
-      [year]: {
-        ...prev[year],
-        [semester]: {
-          ...prev[year][semester],
-          [slot]: null
-        }
-      }
+  const handleScheduledCourseDragStart = (
+    e: React.DragEvent<HTMLDivElement>, 
+    course: ScheduledCourse,
+    year: string,
+    semester: 'fall' | 'spring',
+    slot: number
+  ) => {
+    e.dataTransfer.setData("move-course", JSON.stringify({
+      course,
+      sourceYear: year,
+      sourceSemester: semester,
+      sourceSlot: slot
     }));
   };
 
@@ -139,8 +153,7 @@ export default function SchedulePlanner() {
                       <div 
                         className="text-sm cursor-move"
                         draggable
-                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].fall[i]!)}
-                        onDragEnd={() => handleRemoveCourse(year, 'fall', i)}
+                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].fall[i]!, year, 'fall', i)}
                       >
                         <div className="font-medium">{schedule[year].fall[i]?.code}</div>
                         <div className="text-muted-foreground">{schedule[year].fall[i]?.title}</div>
@@ -170,8 +183,7 @@ export default function SchedulePlanner() {
                       <div 
                         className="text-sm cursor-move"
                         draggable
-                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].spring[i]!)}
-                        onDragEnd={() => handleRemoveCourse(year, 'spring', i)}
+                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].spring[i]!, year, 'spring', i)}
                       >
                         <div className="font-medium">{schedule[year].spring[i]?.code}</div>
                         <div className="text-muted-foreground">{schedule[year].spring[i]?.title}</div>
