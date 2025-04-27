@@ -1,4 +1,3 @@
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -70,13 +69,23 @@ export default function Landing() {
                 </SelectContent>
               </Select>
               
-              <Button 
-                onClick={() => navigate("/economics")}
-                className="w-full"
-              >
-                <GraduationCap className="mr-2 h-4 w-4" />
-                Start Planning
-              </Button>
+              <div className="flex flex-col gap-4">
+                <Button 
+                  onClick={() => navigate("/economics")}
+                  className="w-full"
+                >
+                  <GraduationCap className="mr-2 h-4 w-4" />
+                  Start Planning
+                </Button>
+                <Button 
+                  onClick={() => navigate("/schedule-planner")}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  Schedule Planner
+                </Button>
+              </div>
             </div>
           </div>
         </div>
