@@ -2,6 +2,8 @@
 import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getRemainingPrerequisites } from "@/utils/prerequisiteUtils";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CourseCardProps {
   code: string;
@@ -61,7 +63,7 @@ export function CourseCard({
         checked={completedCourses.includes(code)}
         onCheckedChange={() => onToggleComplete && onToggleComplete(code)}
       />
-      <div className="grid gap-1.5 leading-none">
+      <div className="grid gap-1.5 leading-none flex-grow">
         <label
           htmlFor={code}
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -84,6 +86,17 @@ export function CourseCard({
           )}
         </div>
       </div>
+      {isScheduled && onRemoveFromSchedule && (
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="p-0 h-6 w-6" 
+          onClick={onRemoveFromSchedule}
+          title="Remove from schedule"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 }

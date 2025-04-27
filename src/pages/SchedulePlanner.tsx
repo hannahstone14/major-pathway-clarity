@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
@@ -132,6 +133,20 @@ export default function SchedulePlanner() {
     e.preventDefault();
   };
 
+  const handleRemoveCourse = (year: string, semester: 'fall' | 'spring', slot: number) => {
+    setSchedule(prev => ({
+      ...prev,
+      [year]: {
+        ...prev[year],
+        [semester]: {
+          ...prev[year][semester],
+          [slot]: null
+        }
+      }
+    }));
+    toast.success("Course removed from schedule");
+  };
+
   const YearTable = ({ year }: { year: string }) => (
     <Card className="mb-8">
       <CardHeader>
@@ -150,14 +165,16 @@ export default function SchedulePlanner() {
                     onDrop={(e) => handleDrop(e, year, 'fall', i)}
                   >
                     {schedule[year]?.fall[i] ? (
-                      <div 
-                        className="text-sm cursor-move"
-                        draggable
-                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].fall[i]!, year, 'fall', i)}
-                      >
-                        <div className="font-medium">{schedule[year].fall[i]?.code}</div>
-                        <div className="text-muted-foreground">{schedule[year].fall[i]?.title}</div>
-                      </div>
+                      <CourseCard 
+                        code={schedule[year].fall[i]!.code}
+                        title={schedule[year].fall[i]!.title}
+                        credits={schedule[year].fall[i]!.credits}
+                        prerequisites={schedule[year].fall[i]!.prerequisites}
+                        description={schedule[year].fall[i]!.description}
+                        completedCourses={completedCourses}
+                        isScheduled={true}
+                        onRemoveFromSchedule={() => handleRemoveCourse(year, 'fall', i)}
+                      />
                     ) : (
                       "Drop course here"
                     )}
@@ -180,14 +197,16 @@ export default function SchedulePlanner() {
                     onDrop={(e) => handleDrop(e, year, 'spring', i)}
                   >
                     {schedule[year]?.spring[i] ? (
-                      <div 
-                        className="text-sm cursor-move"
-                        draggable
-                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].spring[i]!, year, 'spring', i)}
-                      >
-                        <div className="font-medium">{schedule[year].spring[i]?.code}</div>
-                        <div className="text-muted-foreground">{schedule[year].spring[i]?.title}</div>
-                      </div>
+                      <CourseCard 
+                        code={schedule[year].spring[i]!.code}
+                        title={schedule[year].spring[i]!.title}
+                        credits={schedule[year].spring[i]!.credits}
+                        prerequisites={schedule[year].spring[i]!.prerequisites}
+                        description={schedule[year].spring[i]!.description}
+                        completedCourses={completedCourses}
+                        isScheduled={true}
+                        onRemoveFromSchedule={() => handleRemoveCourse(year, 'spring', i)}
+                      />
                     ) : (
                       "Drop course here"
                     )}
