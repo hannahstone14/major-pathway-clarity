@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { RequirementSection } from "@/components/RequirementSection";
 import { ElectivesSection } from "@/components/ElectivesSection";
+import { CourseCard } from "@/components/CourseCard";
 
 export default function SchedulePlanner() {
   const navigate = useNavigate();
@@ -121,7 +122,51 @@ export default function SchedulePlanner() {
                 "STAT UN1201"
               ]}
             >
-              {/* Course cards would go here */}
+              <CourseCard
+                code="ECON UN1105"
+                title="Principles of Economics"
+                credits={3}
+                description="Introduction to economic concepts and methods"
+                completedCourses={completedCourses}
+              />
+              <CourseCard
+                code="ECON UN3211"
+                title="Intermediate Microeconomics"
+                credits={4}
+                prerequisites={["ECON UN1105"]}
+                description="Analysis of determination of price and output in different market situations"
+                completedCourses={completedCourses}
+              />
+              <CourseCard
+                code="ECON UN3213"
+                title="Intermediate Macroeconomics"
+                credits={4}
+                prerequisites={["ECON UN1105"]}
+                description="Analysis of determination of national income, employment, and price levels"
+                completedCourses={completedCourses}
+              />
+              <CourseCard
+                code="ECON UN3412"
+                title="Introduction to Econometrics"
+                credits={4}
+                prerequisites={["STAT UN1201"]}
+                description="Statistical methods applied to economic data"
+                completedCourses={completedCourses}
+              />
+              <CourseCard
+                code="MATH UN1101"
+                title="Calculus I"
+                credits={3}
+                description="Limits, continuity, differentiation and integration"
+                completedCourses={completedCourses}
+              />
+              <CourseCard
+                code="STAT UN1201"
+                title="Introduction to Statistics"
+                credits={3}
+                description="Basic concepts of statistics and probability"
+                completedCourses={completedCourses}
+              />
             </RequirementSection>
 
             <RequirementSection
@@ -134,7 +179,22 @@ export default function SchedulePlanner() {
                 "ECON GU4913"
               ]}
             >
-              {/* Seminar cards would go here */}
+              <CourseCard
+                code="ECON GU4911"
+                title="Seminar in Microeconomics"
+                credits={4}
+                prerequisites={["ECON UN3211", "ECON UN3213"]}
+                description="Advanced topics in microeconomic theory and applications"
+                completedCourses={completedCourses}
+              />
+              <CourseCard
+                code="ECON GU4913"
+                title="Seminar in Macroeconomics"
+                credits={4}
+                prerequisites={["ECON UN3211", "ECON UN3213"]}
+                description="Advanced topics in macroeconomic theory and policy"
+                completedCourses={completedCourses}
+              />
             </RequirementSection>
 
             <ElectivesSection
