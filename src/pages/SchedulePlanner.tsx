@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
@@ -97,6 +96,23 @@ export default function SchedulePlanner() {
     }));
   };
 
+  const handleScheduledCourseDragStart = (e: React.DragEvent<HTMLDivElement>, course: ScheduledCourse) => {
+    e.dataTransfer.setData("remove-course", JSON.stringify(course));
+  };
+
+  const handleRemoveCourse = (year: string, semester: 'fall' | 'spring', slot: number) => {
+    setSchedule(prev => ({
+      ...prev,
+      [year]: {
+        ...prev[year],
+        [semester]: {
+          ...prev[year][semester],
+          [slot]: null
+        }
+      }
+    }));
+  };
+
   const handleDragOver = (e: React.DragEvent<HTMLTableCellElement>) => {
     e.preventDefault();
   };
@@ -119,7 +135,12 @@ export default function SchedulePlanner() {
                     onDrop={(e) => handleDrop(e, year, 'fall', i)}
                   >
                     {schedule[year]?.fall[i] ? (
-                      <div className="text-sm">
+                      <div 
+                        className="text-sm cursor-move"
+                        draggable
+                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].fall[i]!)}
+                        onDragEnd={() => handleRemoveCourse(year, 'fall', i)}
+                      >
                         <div className="font-medium">{schedule[year].fall[i]?.code}</div>
                         <div className="text-muted-foreground">{schedule[year].fall[i]?.title}</div>
                       </div>
@@ -145,7 +166,12 @@ export default function SchedulePlanner() {
                     onDrop={(e) => handleDrop(e, year, 'spring', i)}
                   >
                     {schedule[year]?.spring[i] ? (
-                      <div className="text-sm">
+                      <div 
+                        className="text-sm cursor-move"
+                        draggable
+                        onDragStart={(e) => handleScheduledCourseDragStart(e, schedule[year].spring[i]!)}
+                        onDragEnd={() => handleRemoveCourse(year, 'spring', i)}
+                      >
                         <div className="font-medium">{schedule[year].spring[i]?.code}</div>
                         <div className="text-muted-foreground">{schedule[year].spring[i]?.title}</div>
                       </div>

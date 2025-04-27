@@ -12,6 +12,8 @@ interface CourseCardProps {
   isCompleted?: boolean;
   onToggleComplete?: (code: string) => void;
   completedCourses: string[];
+  isScheduled?: boolean;
+  onRemoveFromSchedule?: () => void;
 }
 
 export function CourseCard({ 
@@ -22,7 +24,9 @@ export function CourseCard({
   description,
   isCompleted = false,
   onToggleComplete,
-  completedCourses
+  completedCourses,
+  isScheduled,
+  onRemoveFromSchedule
 }: CourseCardProps) {
   const remainingPrereqs = getRemainingPrerequisites(prerequisites || [], completedCourses);
 
@@ -38,9 +42,9 @@ export function CourseCard({
 
   return (
     <div 
-      draggable
+      draggable={!isScheduled}
       onDragStart={handleDragStart}
-      className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg cursor-move border border-transparent hover:border-border"
+      className={`flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg ${!isScheduled ? 'cursor-move' : ''} border border-transparent hover:border-border`}
     >
       <Checkbox
         id={code}
