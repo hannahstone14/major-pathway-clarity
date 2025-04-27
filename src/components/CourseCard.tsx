@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getRemainingPrerequisites } from "@/utils/prerequisiteUtils";
 
@@ -27,8 +26,22 @@ export function CourseCard({
 }: CourseCardProps) {
   const remainingPrereqs = getRemainingPrerequisites(prerequisites || [], completedCourses);
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.dataTransfer.setData("application/json", JSON.stringify({
+      code,
+      title,
+      credits,
+      prerequisites,
+      description
+    }));
+  };
+
   return (
-    <div className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg">
+    <div 
+      draggable
+      onDragStart={handleDragStart}
+      className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg cursor-move border border-transparent hover:border-border"
+    >
       <Checkbox
         id={code}
         checked={completedCourses.includes(code)}

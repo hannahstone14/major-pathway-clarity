@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
@@ -14,6 +15,24 @@ import { useState } from "react";
 import { RequirementSection } from "@/components/RequirementSection";
 import { ElectivesSection } from "@/components/ElectivesSection";
 import { CourseCard } from "@/components/CourseCard";
+import { toast } from "sonner";
+
+interface ScheduledCourse {
+  code: string;
+  title: string;
+  credits: number;
+  prerequisites?: string[];
+  description: string;
+}
+
+interface SemesterSchedule {
+  [key: number]: ScheduledCourse | null;
+}
+
+interface YearSchedule {
+  fall: SemesterSchedule;
+  spring: SemesterSchedule;
+}
 
 export default function SchedulePlanner() {
   const navigate = useNavigate();
@@ -21,6 +40,17 @@ export default function SchedulePlanner() {
   const [selectedMajor, setSelectedMajor] = useState("Select Major");
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
   
+  // Initialize schedule state
+  const [schedule, setSchedule] = useState<Record<string, YearSchedule>>(() =>
+    years.reduce((acc, year) => ({
+      ...acc,
+      [year]: {
+        fall: Array(6).fill(null).reduce((obj, _, i) => ({ ...obj, [i]: null }), {}),
+        spring: Array(6).fill(null).reduce((obj, _, i) => ({ ...obj, [i]: null }), {})
+      }
+    }), {})
+  );
+
   const majors = [
     "Computer Science",
     "Economics",
@@ -38,6 +68,39 @@ export default function SchedulePlanner() {
     );
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, year: string, semester: 'fall' | 'spring', slot: number) => {
+    e.preventDefault();
+    const courseData = e.dataTransfer.getData("application/json");
+    if (!courseData) return;
+
+    const course: ScheduledCourse = JSON.parse(courseData);
+
+    // Check if course is already scheduled
+    for (const yearData of Object.values(schedule)) {
+      for (const semesterData of Object.values(yearData)) {
+        if (Object.values(semesterData).some(c => c?.code === course.code)) {
+          toast.error("This course is already scheduled");
+          return;
+        }
+      }
+    }
+
+    setSchedule(prev => ({
+      ...prev,
+      [year]: {
+        ...prev[year],
+        [semester]: {
+          ...prev[year][semester],
+          [slot]: course
+        }
+      }
+    }));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableCellElement>) => {
+    e.preventDefault();
+  };
+
   const YearTable = ({ year }: { year: string }) => (
     <Card className="mb-8">
       <CardHeader>
@@ -50,8 +113,19 @@ export default function SchedulePlanner() {
             <TableBody>
               {[...Array(6)].map((_, i) => (
                 <TableRow key={`fall-${i}`}>
-                  <TableCell className="h-12 border border-border">
-                    Course {i + 1}
+                  <TableCell 
+                    className="h-12 border border-border"
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, year, 'fall', i)}
+                  >
+                    {schedule[year]?.fall[i] ? (
+                      <div className="text-sm">
+                        <div className="font-medium">{schedule[year].fall[i]?.code}</div>
+                        <div className="text-muted-foreground">{schedule[year].fall[i]?.title}</div>
+                      </div>
+                    ) : (
+                      "Drop course here"
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -65,8 +139,19 @@ export default function SchedulePlanner() {
             <TableBody>
               {[...Array(6)].map((_, i) => (
                 <TableRow key={`spring-${i}`}>
-                  <TableCell className="h-12 border border-border">
-                    Course {i + 1}
+                  <TableCell 
+                    className="h-12 border border-border"
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, year, 'spring', i)}
+                  >
+                    {schedule[year]?.spring[i] ? (
+                      <div className="text-sm">
+                        <div className="font-medium">{schedule[year].spring[i]?.code}</div>
+                        <div className="text-muted-foreground">{schedule[year].spring[i]?.title}</div>
+                      </div>
+                    ) : (
+                      "Drop course here"
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
