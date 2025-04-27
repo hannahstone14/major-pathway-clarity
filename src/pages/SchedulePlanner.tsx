@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
@@ -10,6 +11,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { RequirementSection } from "@/components/RequirementSection";
 import { ElectivesSection } from "@/components/ElectivesSection";

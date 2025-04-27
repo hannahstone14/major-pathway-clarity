@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,8 @@ import { ElectivesSection } from "@/components/ElectivesSection";
 export default function Index() {
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<{ [key: string]: string }>({});
+  // Initialize scheduledCourses as an empty array
+  const [scheduledCourses, setScheduledCourses] = useState<string[]>([]);
 
   const handleCourseToggle = (code: string) => {
     setCompletedCourses(prev => 
@@ -104,6 +105,7 @@ export default function Index() {
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
           requiredCourses={quantitativeRequirements}
+          scheduledCourses={scheduledCourses}
         >
           <CourseOption
             title="Calculus I or II"
@@ -164,6 +166,7 @@ export default function Index() {
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
           requiredCourses={coreRequirements}
+          scheduledCourses={scheduledCourses}
         >
           <CourseOption
             title="Principles of Economics"
@@ -215,6 +218,7 @@ export default function Index() {
         <ElectivesSection 
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
+          scheduledCourses={scheduledCourses}
         />
 
         <RequirementSection
@@ -223,6 +227,7 @@ export default function Index() {
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
           requiredCourses={seminarRequirements}
+          scheduledCourses={scheduledCourses}
         >
           <CourseOption
             title="Choose one seminar"
@@ -269,6 +274,7 @@ export default function Index() {
           completedCourses={completedCourses}
           onCourseToggle={handleCourseToggle}
           requiredCourses={additionalNotesRequirements}
+          scheduledCourses={scheduledCourses}
         >
           <Card className="w-full p-4 bg-muted/50">
             <ul className="list-disc pl-5 space-y-2">
