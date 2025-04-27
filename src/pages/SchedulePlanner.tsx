@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
@@ -12,11 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { RequirementSection } from "@/components/RequirementSection";
+import { ElectivesSection } from "@/components/ElectivesSection";
 
 export default function SchedulePlanner() {
   const navigate = useNavigate();
   const years = ["Freshman", "Sophomore", "Junior", "Senior"];
   const [selectedMajor, setSelectedMajor] = useState("Select Major");
+  const [completedCourses, setCompletedCourses] = useState<string[]>([]);
   
   const majors = [
     "Computer Science",
@@ -26,6 +28,14 @@ export default function SchedulePlanner() {
     "Biology",
     "Chemistry"
   ];
+
+  const handleCourseToggle = (code: string) => {
+    setCompletedCourses(prev => 
+      prev.includes(code) 
+        ? prev.filter(c => c !== code)
+        : [...prev, code]
+    );
+  };
 
   const YearTable = ({ year }: { year: string }) => (
     <Card className="mb-8">
@@ -69,10 +79,7 @@ export default function SchedulePlanner() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-8">
       <div className="flex items-center gap-4 mb-6">
-        <Button 
-          variant="outline" 
-          onClick={() => navigate(-1)}
-        >
+        <Button variant="outline" onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
@@ -97,12 +104,54 @@ export default function SchedulePlanner() {
         </DropdownMenu>
       </div>
       
-      <h1 className="text-4xl font-bold mb-6">Schedule Planner</h1>
-      
-      <div className="max-w-[1200px] mx-auto">
-        {years.map((year) => (
-          <YearTable key={year} year={year} />
-        ))}
+      <div className="flex gap-8">
+        {selectedMajor === "Economics" && (
+          <div className="w-[400px] space-y-6">
+            <RequirementSection
+              title="Core Requirements"
+              description="Required foundation courses for Economics"
+              completedCourses={completedCourses}
+              onCourseToggle={handleCourseToggle}
+              requiredCourses={[
+                "ECON UN1105",
+                "ECON UN3211",
+                "ECON UN3213",
+                "ECON UN3412",
+                "MATH UN1101",
+                "STAT UN1201"
+              ]}
+            >
+              {/* Course cards would go here */}
+            </RequirementSection>
+
+            <RequirementSection
+              title="Seminars"
+              description="Required senior seminars"
+              completedCourses={completedCourses}
+              onCourseToggle={handleCourseToggle}
+              requiredCourses={[
+                "ECON GU4911",
+                "ECON GU4913"
+              ]}
+            >
+              {/* Seminar cards would go here */}
+            </RequirementSection>
+
+            <ElectivesSection
+              completedCourses={completedCourses}
+              onCourseToggle={handleCourseToggle}
+            />
+          </div>
+        )}
+        
+        <div className="flex-1">
+          <h1 className="text-4xl font-bold mb-6">Schedule Planner</h1>
+          <div className="max-w-[1200px] mx-auto">
+            {years.map((year) => (
+              <YearTable key={year} year={year} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
