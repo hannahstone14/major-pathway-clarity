@@ -77,7 +77,8 @@ export default function SchedulePlanner() {
     // Check if course is already scheduled
     for (const yearData of Object.values(schedule)) {
       for (const semesterData of Object.values(yearData)) {
-        if (Object.values(semesterData).some(c => c?.code === course.code)) {
+        const scheduledCourses = Object.values(semesterData).filter(Boolean) as ScheduledCourse[];
+        if (scheduledCourses.some(c => c && c.code === course.code)) {
           toast.error("This course is already scheduled");
           return;
         }
