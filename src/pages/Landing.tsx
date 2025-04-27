@@ -1,3 +1,4 @@
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -70,7 +71,7 @@ export default function Landing() {
               </Select>
               
               <Button 
-                onClick={() => navigate("/schedule")}
+                onClick={() => navigate("/economics")}
                 className="w-full"
               >
                 <GraduationCap className="mr-2 h-4 w-4" />

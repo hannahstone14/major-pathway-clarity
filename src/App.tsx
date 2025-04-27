@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,8 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import SchedulePlanner from "./pages/SchedulePlanner";
-import RequirementsPage from "./pages/RequirementsPage";
 
 // Get the base URL from the window object which is set in index.html
 const basename = window.location.pathname.includes('major-pathway-clarity') 
@@ -25,8 +24,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/economics" element={<Index />} />
-          <Route path="/requirements" element={<RequirementsPage />} />
-          <Route path="/schedule" element={<SchedulePlanner />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
