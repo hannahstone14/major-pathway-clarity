@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
@@ -11,12 +10,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { RequirementSection } from "@/components/RequirementSection";
 import { ElectivesSection } from "@/components/ElectivesSection";
@@ -45,6 +38,7 @@ export default function SchedulePlanner() {
   const years = ["Freshman", "Sophomore", "Junior", "Senior"];
   const [selectedMajor, setSelectedMajor] = useState("Select Major");
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
+  const [scheduledCourses, setScheduledCourses] = useState<string[]>([]);
   
   // Initialize schedule state
   const [schedule, setSchedule] = useState<Record<string, YearSchedule>>(() =>
@@ -67,6 +61,12 @@ export default function SchedulePlanner() {
   ];
 
   const handleCourseToggle = (code: string) => {
+    // Don't allow toggling if course is scheduled
+    if (scheduledCourses.includes(code)) {
+      toast.error("Cannot mark a scheduled course as completed");
+      return;
+    }
+    
     setCompletedCourses(prev => 
       prev.includes(code) 
         ? prev.filter(c => c !== code)
@@ -92,6 +92,9 @@ export default function SchedulePlanner() {
           }
         }
       }
+
+      // Add course to scheduled courses
+      setScheduledCourses(prev => [...prev, course.code]);
 
       setSchedule(prev => ({
         ...prev,
@@ -140,6 +143,13 @@ export default function SchedulePlanner() {
   };
 
   const handleRemoveCourse = (year: string, semester: 'fall' | 'spring', slot: number) => {
+    // Get the course code before removing it
+    const courseToRemove = schedule[year][semester][slot];
+    if (courseToRemove) {
+      // Remove course from scheduled courses
+      setScheduledCourses(prev => prev.filter(code => code !== courseToRemove.code));
+    }
+
     setSchedule(prev => ({
       ...prev,
       [year]: {
@@ -276,6 +286,7 @@ export default function SchedulePlanner() {
                 "MATH UN1101",
                 "STAT UN1201"
               ]}
+              scheduledCourses={scheduledCourses}
             >
               <CourseCard
                 code="ECON UN1105"
@@ -283,6 +294,7 @@ export default function SchedulePlanner() {
                 credits={3}
                 description="Introduction to economic concepts and methods"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
               <CourseCard
                 code="ECON UN3211"
@@ -291,6 +303,7 @@ export default function SchedulePlanner() {
                 prerequisites={["ECON UN1105"]}
                 description="Analysis of determination of price and output in different market situations"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
               <CourseCard
                 code="ECON UN3213"
@@ -299,6 +312,7 @@ export default function SchedulePlanner() {
                 prerequisites={["ECON UN1105"]}
                 description="Analysis of determination of national income, employment, and price levels"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
               <CourseCard
                 code="ECON UN3412"
@@ -307,6 +321,7 @@ export default function SchedulePlanner() {
                 prerequisites={["STAT UN1201"]}
                 description="Statistical methods applied to economic data"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
               <CourseCard
                 code="MATH UN1101"
@@ -314,6 +329,7 @@ export default function SchedulePlanner() {
                 credits={3}
                 description="Limits, continuity, differentiation and integration"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
               <CourseCard
                 code="STAT UN1201"
@@ -321,6 +337,7 @@ export default function SchedulePlanner() {
                 credits={3}
                 description="Basic concepts of statistics and probability"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
             </RequirementSection>
 
@@ -333,6 +350,7 @@ export default function SchedulePlanner() {
                 "ECON GU4911",
                 "ECON GU4913"
               ]}
+              scheduledCourses={scheduledCourses}
             >
               <CourseCard
                 code="ECON GU4911"
@@ -341,6 +359,7 @@ export default function SchedulePlanner() {
                 prerequisites={["ECON UN3211", "ECON UN3213"]}
                 description="Advanced topics in microeconomic theory and applications"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
               <CourseCard
                 code="ECON GU4913"
@@ -349,12 +368,14 @@ export default function SchedulePlanner() {
                 prerequisites={["ECON UN3211", "ECON UN3213"]}
                 description="Advanced topics in macroeconomic theory and policy"
                 completedCourses={completedCourses}
+                onToggleComplete={handleCourseToggle}
               />
             </RequirementSection>
 
             <ElectivesSection
               completedCourses={completedCourses}
               onCourseToggle={handleCourseToggle}
+              scheduledCourses={scheduledCourses}
             />
           </div>
         )}

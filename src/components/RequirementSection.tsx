@@ -1,9 +1,10 @@
 
-import React from "react";
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { CourseCard } from './CourseCard';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 
 interface RequirementSectionProps {
   title: string;
@@ -12,76 +13,48 @@ interface RequirementSectionProps {
   completedCourses: string[];
   onCourseToggle: (code: string) => void;
   requiredCourses: string[];
+  scheduledCourses: string[];
 }
 
-interface CourseCardProps {
-  code: string;
-  title: string;
-  credits: number;
-  prerequisites?: string[];
-  description: string;
-  isCompleted?: boolean;
-  onToggleComplete?: (code: string) => void;
-}
-
-export function RequirementSection({ 
-  title, 
-  description, 
-  children, 
+export function RequirementSection({
+  title,
+  description,
+  children,
   completedCourses,
   onCourseToggle,
-  requiredCourses 
+  requiredCourses,
+  scheduledCourses
 }: RequirementSectionProps) {
-  const childrenWithCompletion = React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      if ('code' in child.props) {
-        return React.cloneElement(child as React.ReactElement<CourseCardProps>, {
-          isCompleted: completedCourses.includes((child.props as CourseCardProps).code),
-          onToggleComplete: onCourseToggle
-        });
-      }
-      return child;
+  const [isOpen, setIsOpen] = React.useState(true);
+
+  // Filter out children that represent scheduled courses
+  const filteredChildren = React.Children.toArray(children).filter(child => {
+    if (React.isValidElement(child) && 'code' in child.props) {
+      return !scheduledCourses.includes(child.props.code);
     }
-    return child;
+    return true;
   });
 
-  const completedCount = requiredCourses.filter(course => 
-    completedCourses.includes(course)
-  ).length;
-  
-  const progressPercentage = (completedCount / requiredCourses.length) * 100;
-  const isCompleted = progressPercentage === 100;
-
-  const [isOpen, setIsOpen] = React.useState(!isCompleted);
-
   return (
-    <Card className="w-full mb-8">
+    <Card>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div className="space-y-1.5">
-            <CardTitle className="text-2xl font-bold text-primary">{title}</CardTitle>
-            <p className="text-muted-foreground">{description}</p>
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle>{title}</CardTitle>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'transform rotate-180' : ''}`} />
+              </Button>
+            </CollapsibleTrigger>
           </div>
-          <CollapsibleTrigger className="hover:bg-accent p-2 rounded-full">
-            {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </CollapsibleTrigger>
+          <p className="text-sm text-muted-foreground">{description}</p>
         </CardHeader>
-        <CardContent className="pb-3">
-          <div className="space-y-2 mb-4">
-            <div className="flex justify-between text-sm">
-              <span>{completedCount} / {requiredCourses.length} requirements completed</span>
-              <span>{Math.round(progressPercentage)}%</span>
-            </div>
-            <Progress value={progressPercentage} className="w-full" />
-          </div>
-          <CollapsibleContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-4">
-              {childrenWithCompletion}
-            </div>
-          </CollapsibleContent>
-        </CardContent>
+        <CollapsibleContent>
+          <CardContent>
+            {filteredChildren}
+          </CardContent>
+        </CollapsibleContent>
       </Collapsible>
     </Card>
   );
 }
-
