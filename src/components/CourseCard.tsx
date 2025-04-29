@@ -1,9 +1,10 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getRemainingPrerequisites } from "@/utils/prerequisiteUtils";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DancingLion } from "@/components/DancingLion";
 
 interface CourseCardProps {
   code: string;
@@ -30,8 +31,19 @@ export function CourseCard({
   isScheduled,
   onRemoveFromSchedule
 }: CourseCardProps) {
+  const [showLion, setShowLion] = useState(false);
   const remainingPrereqs = getRemainingPrerequisites(prerequisites || [], completedCourses);
   const isComplete = completedCourses.includes(code);
+
+  useEffect(() => {
+    if (showLion) {
+      // Hide the lion after 3 seconds
+      const timer = setTimeout(() => {
+        setShowLion(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showLion]);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     // Don't allow dragging if course is completed
@@ -49,6 +61,16 @@ export function CourseCard({
     }));
   };
 
+  const handleCheckboxChange = () => {
+    if (onToggleComplete) {
+      // If the course is not completed, show the dancing lion
+      if (!isComplete && !isScheduled) {
+        setShowLion(true);
+      }
+      onToggleComplete(code);
+    }
+  };
+
   return (
     <div 
       draggable={!isScheduled && !isComplete}
@@ -61,7 +83,7 @@ export function CourseCard({
       <Checkbox
         id={code}
         checked={completedCourses.includes(code)}
-        onCheckedChange={() => onToggleComplete && onToggleComplete(code)}
+        onCheckedChange={handleCheckboxChange}
       />
       <div className="grid gap-1.5 leading-none flex-grow">
         <label
@@ -97,6 +119,7 @@ export function CourseCard({
           <X className="h-4 w-4" />
         </Button>
       )}
+      <DancingLion show={showLion} />
     </div>
   );
 }
