@@ -26,6 +26,8 @@ import { RequirementSection } from "@/components/RequirementSection";
 import { ElectivesSection } from "@/components/ElectivesSection";
 import { CourseCard } from "@/components/CourseCard";
 import { toast } from "sonner";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ScheduledCourse {
   code: string;
@@ -113,31 +115,126 @@ export default function SchedulePlanner() {
     }
   };
 
-  // Export schedule as CSV
+  // Export schedule as PDF
   const handleExport = () => {
-    let csvContent = "Year,Semester,Course Code,Course Title,Credits\n";
+    // Create a new PDF document
+    const doc = new jsPDF();
     
+    // Add title
+    doc.setFontSize(20);
+    doc.text(`${selectedMajor} - Four Year Schedule Plan`, 14, 22);
+    
+    doc.setFontSize(12);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+    
+    let yPosition = 40;
+    const pageHeight = doc.internal.pageSize.height;
+    
+    // Process each year and semester
     Object.entries(schedule).forEach(([year, yearData]) => {
-      Object.entries(yearData).forEach(([semester, semesterData]) => {
-        Object.values(semesterData).forEach((course) => {
+      // Check if we have any courses in this year
+      const fallCourses = Object.values(yearData.fall).filter(Boolean);
+      const springCourses = Object.values(yearData.spring).filter(Boolean);
+      
+      if (fallCourses.length === 0 && springCourses.length === 0) {
+        return; // Skip empty years
+      }
+      
+      // Add year header
+      if (yPosition > pageHeight - 40) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(16);
+      doc.text(`${year} Year`, 14, yPosition);
+      yPosition += 10;
+      
+      // Fall Semester
+      if (fallCourses.length > 0) {
+        doc.setFontSize(14);
+        doc.text("Fall Semester", 14, yPosition);
+        yPosition += 8;
+        
+        // Create table for fall courses
+        autoTable(doc, {
+          startY: yPosition,
+          head: [['Course Code', 'Course Title', 'Credits']],
+          body: fallCourses.map(course => {
+            const typedCourse = course as ScheduledCourse;
+            return [typedCourse.code, typedCourse.title, typedCourse.credits.toString()];
+          }),
+          theme: 'grid',
+          headStyles: { fillColor: [70, 130, 180] },
+          styles: { fontSize: 10 },
+        });
+        
+        yPosition = (doc as any).lastAutoTable.finalY + 15;
+      }
+      
+      // Spring Semester
+      if (springCourses.length > 0) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        
+        doc.setFontSize(14);
+        doc.text("Spring Semester", 14, yPosition);
+        yPosition += 8;
+        
+        // Create table for spring courses
+        autoTable(doc, {
+          startY: yPosition,
+          head: [['Course Code', 'Course Title', 'Credits']],
+          body: springCourses.map(course => {
+            const typedCourse = course as ScheduledCourse;
+            return [typedCourse.code, typedCourse.title, typedCourse.credits.toString()];
+          }),
+          theme: 'grid',
+          headStyles: { fillColor: [70, 130, 180] },
+          styles: { fontSize: 10 },
+        });
+        
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      }
+    });
+    
+    // Generate a summary with total credits
+    let totalCredits = 0;
+    let totalCourses = 0;
+    
+    Object.values(schedule).forEach(yearData => {
+      Object.values(yearData).forEach(semesterData => {
+        Object.values(semesterData).forEach(course => {
           if (course) {
-            const typedCourse = course as ScheduledCourse; // Fix type issue by casting
-            csvContent += `${year},${semester},${typedCourse.code},${typedCourse.title},${typedCourse.credits}\n`;
+            const typedCourse = course as ScheduledCourse;
+            totalCredits += typedCourse.credits;
+            totalCourses++;
           }
         });
       });
     });
     
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${selectedMajor}_schedule_plan.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (totalCourses > 0) {
+      if (yPosition > pageHeight - 30) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.text("Schedule Summary", 14, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(12);
+      doc.text(`Total Courses: ${totalCourses}`, 14, yPosition);
+      yPosition += 8;
+      doc.text(`Total Credits: ${totalCredits}`, 14, yPosition);
+    }
     
-    toast.success("Schedule exported as CSV");
+    // Save the PDF
+    doc.save(`${selectedMajor.replace(/\s+/g, '_')}_schedule_plan.pdf`);
+    toast.success("Schedule exported as PDF");
   };
 
   // Generate content for printing
@@ -443,7 +540,7 @@ export default function SchedulePlanner() {
             
             <Button onClick={handleExport} variant="outline" className="hover:bg-white/50">
               <FileText className="mr-2 h-4 w-4" />
-              Export CSV
+              Export PDF
             </Button>
           </div>
         </div>
