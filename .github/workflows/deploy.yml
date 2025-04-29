@@ -8,6 +8,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest # Use the latest Ubuntu runner
 
+environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
     permissions:
       contents: write # Allow the action to write to the repository (for gh-pages branch)
       pages: write    # Allow the action to deploy to GitHub Pages
