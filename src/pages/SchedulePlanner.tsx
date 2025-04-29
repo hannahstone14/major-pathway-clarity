@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronDown, Printer, FileExport } from "lucide-react";
+import { ArrowLeft, ChevronDown, Printer, FileText } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -121,7 +121,8 @@ export default function SchedulePlanner() {
       Object.entries(yearData).forEach(([semester, semesterData]) => {
         Object.values(semesterData).forEach((course) => {
           if (course) {
-            csvContent += `${year},${semester},${course.code},${course.title},${course.credits}\n`;
+            const typedCourse = course as ScheduledCourse; // Fix type issue by casting
+            csvContent += `${year},${semester},${typedCourse.code},${typedCourse.title},${typedCourse.credits}\n`;
           }
         });
       });
@@ -441,7 +442,7 @@ export default function SchedulePlanner() {
             </Popover>
             
             <Button onClick={handleExport} variant="outline" className="hover:bg-white/50">
-              <FileExport className="mr-2 h-4 w-4" />
+              <FileText className="mr-2 h-4 w-4" />
               Export CSV
             </Button>
           </div>
