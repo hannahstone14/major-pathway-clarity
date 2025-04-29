@@ -252,6 +252,29 @@ export default function SchedulePlanner() {
     </AccordionItem>
   );
 
+  // Define the requirement categories from the Economics page
+  const quantitativeRequirements = [
+    "MATH UN1101", "MATH UN1102", 
+    "MATH UN1201", "MATH UN1205", 
+    "STAT UN1201"
+  ];
+
+  const coreRequirements = [
+    "ECON UN1105", "ECON AP/IB", 
+    "ECON UN3211",
+    "ECON UN3213",
+    "ECON UN3412"
+  ];
+
+  const seminarRequirements = [
+    "ECON GU4911",
+    "ECON GU4913",
+    "ECON GU4918",
+    "ECON GU4921"
+  ];
+
+  const additionalRequirements: string[] = [];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8">
       <div className="max-w-[1400px] mx-auto">
@@ -290,13 +313,7 @@ export default function SchedulePlanner() {
                 description="Mathematical foundation courses required for the Economics major"
                 completedCourses={completedCourses}
                 onCourseToggle={handleCourseToggle}
-                requiredCourses={[
-                  "MATH UN1101",
-                  "MATH UN1102", 
-                  "MATH UN1201",
-                  "MATH UN1205",
-                  "STAT UN1201"
-                ]}
+                requiredCourses={quantitativeRequirements}
                 scheduledCourses={scheduledCourses}
               >
                 <CourseCard
@@ -343,26 +360,19 @@ export default function SchedulePlanner() {
                 />
               </RequirementSection>
 
-              {/* Keep the original Core Requirements section */}
+              {/* Core Requirements Section */}
               <RequirementSection
-                title="Core Requirements"
-                description="Required foundation courses for Economics"
+                title="II. Core Courses"
+                description="These foundational courses are required for all Economics majors"
                 completedCourses={completedCourses}
                 onCourseToggle={handleCourseToggle}
-                requiredCourses={[
-                  "ECON UN1105",
-                  "ECON UN3211",
-                  "ECON UN3213",
-                  "ECON UN3412",
-                  "MATH UN1101",
-                  "STAT UN1201"
-                ]}
+                requiredCourses={coreRequirements}
                 scheduledCourses={scheduledCourses}
               >
                 <CourseCard
                   code="ECON UN1105"
                   title="Principles of Economics"
-                  credits={3}
+                  credits={4}
                   description="Introduction to economic concepts and methods"
                   completedCourses={completedCourses}
                   onToggleComplete={handleCourseToggle}
@@ -394,33 +404,22 @@ export default function SchedulePlanner() {
                   completedCourses={completedCourses}
                   onToggleComplete={handleCourseToggle}
                 />
-                <CourseCard
-                  code="MATH UN1101"
-                  title="Calculus I"
-                  credits={3}
-                  description="Limits, continuity, differentiation and integration"
-                  completedCourses={completedCourses}
-                  onToggleComplete={handleCourseToggle}
-                />
-                <CourseCard
-                  code="STAT UN1201"
-                  title="Introduction to Statistics"
-                  credits={3}
-                  description="Basic concepts of statistics and probability"
-                  completedCourses={completedCourses}
-                  onToggleComplete={handleCourseToggle}
-                />
               </RequirementSection>
 
-              <RequirementSection
-                title="Seminars"
-                description="Required senior seminars"
+              {/* Electives Section */}
+              <ElectivesSection 
                 completedCourses={completedCourses}
                 onCourseToggle={handleCourseToggle}
-                requiredCourses={[
-                  "ECON GU4911",
-                  "ECON GU4913"
-                ]}
+                scheduledCourses={scheduledCourses}
+              />
+
+              {/* Seminar Requirements Section */}
+              <RequirementSection
+                title="IV. Seminar Requirement"
+                description="Take one of the following seminars (Prerequisites: UN3211, UN3213, UN3412)"
+                completedCourses={completedCourses}
+                onCourseToggle={handleCourseToggle}
+                requiredCourses={seminarRequirements}
                 scheduledCourses={scheduledCourses}
               >
                 <CourseCard
@@ -441,13 +440,45 @@ export default function SchedulePlanner() {
                   completedCourses={completedCourses}
                   onToggleComplete={handleCourseToggle}
                 />
+                <CourseCard
+                  code="ECON GU4918"
+                  title="Seminar in Econometrics"
+                  credits={4}
+                  prerequisites={["ECON UN3211", "ECON UN3213", "ECON UN3412"]}
+                  description="Advanced seminar on econometric methods."
+                  completedCourses={completedCourses}
+                  onToggleComplete={handleCourseToggle}
+                />
+                <CourseCard
+                  code="ECON GU4921"
+                  title="Seminar in Political Economy"
+                  credits={4}
+                  prerequisites={["ECON UN3211", "ECON UN3213", "ECON GU4370"]}
+                  description="Advanced seminar on political economy topics."
+                  completedCourses={completedCourses}
+                  onToggleComplete={handleCourseToggle}
+                />
               </RequirementSection>
 
-              <ElectivesSection
+              {/* Additional Notes Section */}
+              <RequirementSection
+                title="Additional Notes"
+                description="Important information about the Economics major requirements"
                 completedCourses={completedCourses}
                 onCourseToggle={handleCourseToggle}
+                requiredCourses={additionalRequirements}
                 scheduledCourses={scheduledCourses}
-              />
+              >
+                <div className="w-full p-4 bg-muted/50 rounded-lg">
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Minimum 9 economics lecture courses, 5 must be taken in the Columbia Economics Department.</li>
+                    <li>Barnard seminars don't count for the seminar requirement.</li>
+                    <li>You must get a C- or higher in major classes, except for UN1105 which can be Pass/D/Fail.</li>
+                    <li>No credit for courses taken before prerequisites.</li>
+                    <li>Transfer credits must be approved by the department.</li>
+                  </ul>
+                </div>
+              </RequirementSection>
             </div>
           )}
           

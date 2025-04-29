@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CourseCard } from './CourseCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
@@ -9,7 +8,7 @@ import { ChevronDown } from "lucide-react";
 interface RequirementSectionProps {
   title: string;
   description: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   completedCourses: string[];
   onCourseToggle: (code: string) => void;
   requiredCourses: string[];
@@ -28,12 +27,12 @@ export function RequirementSection({
   const [isOpen, setIsOpen] = React.useState(true);
 
   // Filter out children that represent scheduled courses
-  const filteredChildren = React.Children.toArray(children).filter(child => {
+  const filteredChildren = children ? React.Children.toArray(children).filter(child => {
     if (React.isValidElement(child) && 'code' in child.props) {
       return !scheduledCourses.includes(child.props.code);
     }
     return true;
-  });
+  }) : [];
 
   return (
     <Card>
@@ -51,7 +50,9 @@ export function RequirementSection({
         </CardHeader>
         <CollapsibleContent>
           <CardContent>
-            {filteredChildren}
+            {filteredChildren.length > 0 ? filteredChildren : (
+              <p className="text-muted-foreground text-sm italic">No course details available</p>
+            )}
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
