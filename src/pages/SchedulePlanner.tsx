@@ -28,6 +28,7 @@ import { CourseCard } from "@/components/CourseCard";
 import { toast } from "sonner";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { DancingLion } from "@/components/DancingLion";
 
 interface ScheduledCourse {
   code: string;
@@ -53,6 +54,7 @@ export default function SchedulePlanner() {
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
   const [scheduledCourses, setScheduledCourses] = useState<string[]>([]);
   const scheduleRef = useRef<HTMLDivElement>(null);
+  const [showLion, setShowLion] = useState(false);
   
   // Initialize schedule state
   const [schedule, setSchedule] = useState<Record<string, YearSchedule>>(() =>
@@ -235,6 +237,10 @@ export default function SchedulePlanner() {
     // Save the PDF
     doc.save(`${selectedMajor.replace(/\s+/g, '_')}_schedule_plan.pdf`);
     toast.success("Schedule exported as PDF");
+    
+    // Show the dancing lion
+    setShowLion(true);
+    setTimeout(() => setShowLion(false), 3000); // Hide lion after 3 seconds
   };
 
   // Generate content for printing
@@ -488,6 +494,7 @@ export default function SchedulePlanner() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8">
+      <DancingLion show={showLion} />
       <div className="max-w-[1400px] mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
