@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SchedulePlanner from "./pages/SchedulePlanner";
+import AboutPage from "./pages/AboutPage";
 
 // Get the base URL from the window object which is set in index.html
 const basename = window.location.pathname.includes('major-pathway-clarity') 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/" element={<Landing />} />
           <Route path="/economics" element={<Index />} />
           <Route path="/schedule-planner" element={<SchedulePlanner />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
