@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import SchedulePlanner from "./pages/SchedulePlanner";
+import SchedulePlanner from "./pages/SchedulePlanner"; //adding a comment here
 import AboutPage from "./pages/AboutPage";
 
 // Get the base URL from the window object which is set in index.html
