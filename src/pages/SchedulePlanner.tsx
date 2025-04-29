@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown, Printer, FileExport } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -16,7 +16,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { useState, useRef } from "react";
 import { RequirementSection } from "@/components/RequirementSection";
 import { ElectivesSection } from "@/components/ElectivesSection";
 import { CourseCard } from "@/components/CourseCard";
@@ -45,6 +50,7 @@ export default function SchedulePlanner() {
   const [selectedMajor, setSelectedMajor] = useState("Select Major");
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
   const [scheduledCourses, setScheduledCourses] = useState<string[]>([]);
+  const scheduleRef = useRef<HTMLDivElement>(null);
   
   // Initialize schedule state
   const [schedule, setSchedule] = useState<Record<string, YearSchedule>>(() =>
@@ -65,6 +71,113 @@ export default function SchedulePlanner() {
     "Biology",
     "Chemistry"
   ];
+
+  // Handle printing schedule
+  const handlePrint = () => {
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Schedule Plan - ${selectedMajor}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              h1, h2, h3 { color: #333; }
+              .year { margin-bottom: 30px; }
+              .semester { margin-bottom: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; }
+              th { background-color: #f2f2f2; }
+              .course { padding: 10px; border: 1px solid #ddd; margin-bottom: 5px; background-color: #f9f9f9; }
+              .completed { background-color: #e6ffe6; }
+              .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+              .logo { font-weight: bold; font-size: 24px; }
+              .date { color: #666; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <div class="logo">Major Pathway Clarity</div>
+              <div class="date">Generated: ${new Date().toLocaleDateString()}</div>
+            </div>
+            <h1>${selectedMajor} - Four Year Schedule Plan</h1>
+            ${generatePrintContent()}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+      toast.success("Print preview opened");
+    }
+  };
+
+  // Export schedule as CSV
+  const handleExport = () => {
+    let csvContent = "Year,Semester,Course Code,Course Title,Credits\n";
+    
+    Object.entries(schedule).forEach(([year, yearData]) => {
+      Object.entries(yearData).forEach(([semester, semesterData]) => {
+        Object.values(semesterData).forEach((course) => {
+          if (course) {
+            csvContent += `${year},${semester},${course.code},${course.title},${course.credits}\n`;
+          }
+        });
+      });
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${selectedMajor}_schedule_plan.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success("Schedule exported as CSV");
+  };
+
+  // Generate content for printing
+  const generatePrintContent = () => {
+    let content = '';
+    
+    Object.entries(schedule).forEach(([year, yearData]) => {
+      content += `<div class="year"><h2>${year} Year</h2>`;
+      
+      content += `<div class="semester"><h3>Fall Semester</h3><table>
+        <tr><th>Course Code</th><th>Course Title</th><th>Credits</th></tr>`;
+      
+      Object.values(yearData.fall).forEach(course => {
+        if (course) {
+          content += `<tr>
+            <td>${course.code}</td>
+            <td>${course.title}</td>
+            <td>${course.credits}</td>
+          </tr>`;
+        }
+      });
+      content += `</table></div>`;
+      
+      content += `<div class="semester"><h3>Spring Semester</h3><table>
+        <tr><th>Course Code</th><th>Course Title</th><th>Credits</th></tr>`;
+      
+      Object.values(yearData.spring).forEach(course => {
+        if (course) {
+          content += `<tr>
+            <td>${course.code}</td>
+            <td>${course.title}</td>
+            <td>${course.credits}</td>
+          </tr>`;
+        }
+      });
+      content += `</table></div>`;
+      content += `</div>`;
+    });
+    
+    return content;
+  };
 
   const handleCourseToggle = (code: string) => {
     // Don't allow toggling if course is scheduled
@@ -278,33 +391,63 @@ export default function SchedulePlanner() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8">
       <div className="max-w-[1400px] mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="outline" onClick={() => navigate(-1)} className="hover:bg-white/50">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button variant="outline" onClick={() => navigate(-1)} className="hover:bg-white/50">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="min-w-[150px] hover:bg-white/50">
-                {selectedMajor}
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[150px]">
-              {majors.map((major) => (
-                <DropdownMenuItem
-                  key={major}
-                  onClick={() => setSelectedMajor(major)}
-                >
-                  {major}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="min-w-[150px] hover:bg-white/50">
+                  {selectedMajor}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[150px]">
+                {majors.map((major) => (
+                  <DropdownMenuItem
+                    key={major}
+                    onClick={() => setSelectedMajor(major)}
+                  >
+                    {major}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          
+          <div className="flex gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="hover:bg-white/50">
+                  <Printer className="mr-2 h-4 w-4" />
+                  Print Schedule
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="space-y-4">
+                  <h4 className="font-medium">Print Schedule</h4>
+                  <p className="text-sm text-muted-foreground">
+                    This will open a print-friendly version of your schedule in a new window.
+                  </p>
+                  <Button onClick={handlePrint} className="w-full">
+                    <Printer className="mr-2 h-4 w-4" />
+                    Print Preview
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            
+            <Button onClick={handleExport} variant="outline" className="hover:bg-white/50">
+              <FileExport className="mr-2 h-4 w-4" />
+              Export CSV
+            </Button>
+          </div>
         </div>
         
-        <div className="flex gap-8">
+        <div className="flex gap-8" ref={scheduleRef}>
           {selectedMajor === "Economics" && (
             <div className="w-[400px] space-y-6 animate-fade-in">
               {/* Quantitative Requirements Section */}

@@ -13,6 +13,7 @@ interface RequirementSectionProps {
   onCourseToggle: (code: string) => void;
   requiredCourses: string[];
   scheduledCourses: string[];
+  className?: string;
 }
 
 export function RequirementSection({
@@ -22,7 +23,8 @@ export function RequirementSection({
   completedCourses,
   onCourseToggle,
   requiredCourses,
-  scheduledCourses
+  scheduledCourses,
+  className
 }: RequirementSectionProps) {
   const [isOpen, setIsOpen] = React.useState(true);
 
@@ -35,7 +37,7 @@ export function RequirementSection({
   }) : [];
 
   return (
-    <Card>
+    <Card className={className}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
