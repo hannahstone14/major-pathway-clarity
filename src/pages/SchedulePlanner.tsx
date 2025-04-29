@@ -284,6 +284,66 @@ export default function SchedulePlanner() {
         <div className="flex gap-8">
           {selectedMajor === "Economics" && (
             <div className="w-[400px] space-y-6 animate-fade-in">
+              {/* Quantitative Requirements Section */}
+              <RequirementSection
+                title="I. Quantitative Requirements"
+                description="Mathematical foundation courses required for the Economics major"
+                completedCourses={completedCourses}
+                onCourseToggle={handleCourseToggle}
+                requiredCourses={[
+                  "MATH UN1101",
+                  "MATH UN1102", 
+                  "MATH UN1201",
+                  "MATH UN1205",
+                  "STAT UN1201"
+                ]}
+                scheduledCourses={scheduledCourses}
+              >
+                <CourseCard
+                  code="MATH UN1101"
+                  title="Calculus I"
+                  credits={3}
+                  description="Introduction to differential calculus of functions of one variable."
+                  completedCourses={completedCourses}
+                  onToggleComplete={handleCourseToggle}
+                />
+                <CourseCard
+                  code="MATH UN1102"
+                  title="Calculus II"
+                  credits={3}
+                  description="Introduction to integral calculus of functions of one variable."
+                  completedCourses={completedCourses}
+                  onToggleComplete={handleCourseToggle}
+                />
+                <CourseCard
+                  code="MATH UN1201"
+                  title="Calculus III"
+                  credits={3}
+                  prerequisites={["MATH UN1102"]}
+                  description="Vector functions, partial differentiation, multiple integrals."
+                  completedCourses={completedCourses}
+                  onToggleComplete={handleCourseToggle}
+                />
+                <CourseCard
+                  code="MATH UN1205"
+                  title="Accelerated Multivariable Calculus"
+                  credits={4}
+                  prerequisites={["MATH UN1102"]}
+                  description="Accelerated version of Calculus III covering multivariable calculus and linear algebra."
+                  completedCourses={completedCourses}
+                  onToggleComplete={handleCourseToggle}
+                />
+                <CourseCard
+                  code="STAT UN1201"
+                  title="Introduction to Statistics"
+                  credits={3}
+                  description="Basic concepts of statistics and probability"
+                  completedCourses={completedCourses}
+                  onToggleComplete={handleCourseToggle}
+                />
+              </RequirementSection>
+
+              {/* Keep the original Core Requirements section */}
               <RequirementSection
                 title="Core Requirements"
                 description="Required foundation courses for Economics"
